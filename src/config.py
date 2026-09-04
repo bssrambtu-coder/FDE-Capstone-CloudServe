@@ -36,6 +36,12 @@ class Config:
     retrieval_top_k: int = _i("RETRIEVAL_TOP_K", 5)
     retrieval_floor: float = _f("RETRIEVAL_FLOOR", 0.42)
 
+    # "hybrid" is the recommended configuration and the one the fairness
+    # condition holds under; "lexical" is the zero-dependency default so a
+    # clean checkout runs with nothing installed.
+    retrieval_backend: str = os.environ.get("RETRIEVAL_BACKEND", "lexical")
+    semantic_gate: float = _f("SEMANTIC_GATE", 0.60)
+
     # Resilience (A11).
     provider_timeout_s: float = _f("PROVIDER_TIMEOUT_S", 20.0)
     provider_max_retries: int = _i("PROVIDER_MAX_RETRIES", 3)

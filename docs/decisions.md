@@ -146,17 +146,37 @@ Two changes came out of the fairness audit (`docs/fairness_audit.md`):
 The floor moved 0.60 to 0.42 after the rescale. On validation this raised
 correct abstention from 40.7% to 55.6% with hit rate holding at 79.3%.
 
+## D10 — Hybrid retrieval: fuse for ranking, gate on semantics for abstention
+
+Ranking and abstention are different decisions and need different signals.
+Ranking is reciprocal rank fusion over BM25 and `all-MiniLM-L6-v2`; abstention
+is gated on the semantic score alone. Rejected along the way: semantic-only
+(still failed fluency at any usable abstention level) and rank fusion alone
+(passed every fairness dimension at 97.5% hit rate but could not abstain at
+all, because a ranking always exists).
+
+`lexical` stays the code default so a clean checkout runs with nothing
+installed and the gate cannot fail on a dependency. **`hybrid` is the
+recommended and audited configuration** — set `RETRIEVAL_BACKEND=hybrid` or
+pass `--backend hybrid`. Degrading to lexical logs a warning, because it
+reopens R-07.
+
+Cost: 6.2ms per ticket against 0.1ms, and correct abstention fell from 29.4%
+to 12.6% on development. See the honest note in `docs/fairness_audit.md`.
+
 ## Open items
 
-- **Fairness condition is BREACHED and unmitigated.** Retrieval hit rate
-  differs by **8.29pp between fluent and non-fluent customers** (81.85% vs
-  73.56%) against a 5pp condition, and the mechanism is measured: BM25 rewards
-  vocabulary overlap, so non-standard phrasing scores lower, and an absolute
-  threshold cuts it disproportionately. Abstention and fairness trade directly
-  against each other, so no threshold setting satisfies both. The fix is
-  semantic retrieval (D6). Risk register entry R-07 in
-  `docs/fairness_audit.md`; do not close it on the mechanism argument, close it
-  on a re-audit.
+- **R-07 primary breach CLOSED by D10.** Hybrid retrieval brought every
+  fluency measure inside the 5pp condition (retrieval gap 8.29pp to 4.30pp)
+  and lifted hit rate 79.8% to 96.4%. Re-audited, not argued.
+- **R-08 open.** Routing agreement now varies by region (7.99pp) and tier
+  (5.80pp), and citation coverage by region (8.45pp). Different cause: better
+  retrieval removed an escalation path, so automation rose 69% to 81% and
+  over-answering rose with it. The lever is the confidence threshold.
+- **Confidence threshold is the top priority.** Still the Brief's illustrative
+  0.80, still doing almost nothing because calibrated confidence is 0.988 for
+  nearly everything. It is now the only untuned control, and both R-08 gaps
+  plus the fallen abstention rate point at it.
 - The earlier 28pp tier gap was small-sample noise (n=8 on validation). On 500
   tickets the tier residual is 4.44pp and passes. The regional gap is largely
   inherited: the experts' own labels vary by 14.43pp across regions against our

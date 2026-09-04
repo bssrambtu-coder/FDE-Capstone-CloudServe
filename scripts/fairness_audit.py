@@ -34,6 +34,7 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
+from src.config import CONFIG            # noqa: E402
 from src.ingest import load_tickets      # noqa: E402
 from src.pipeline import Pipeline        # noqa: E402
 
@@ -203,11 +204,16 @@ def main() -> int:
     ap.add_argument("--input", default=DEV)
     ap.add_argument("--output", default="evaluation/fairness")
     ap.add_argument("--min-cell", type=int, default=12)
+    ap.add_argument("--backend", choices=("lexical", "chroma", "hybrid"),
+                    default=CONFIG.retrieval_backend)
+    ap.add_argument("--semantic-gate", type=float, default=CONFIG.semantic_gate)
     args = ap.parse_args()
     logging.basicConfig(level=logging.ERROR)
 
     tickets = list(load_tickets(args.input))
-    pipe = Pipeline()
+    from dataclasses import replace
+    pipe = Pipeline(config=replace(CONFIG, retrieval_backend=args.backend,
+                                   semantic_gate=args.semantic_gate))
     rows = []
     for t in tickets:
         o = pipe.process(t)
@@ -232,6 +238,7 @@ def main() -> int:
 
     report = {
         "input": args.input,
+        "backend": args.backend,
         "tickets": len(rows),
         "automation_rate_pct": round(100 * sum(r["automated"] for r in rows) / len(rows), 2),
         "quality_by_group": {f: quality(rows, f) for f in FIELDS},
@@ -245,10 +252,10 @@ def main() -> int:
 
     out = pathlib.Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "fairness.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    (out / f"fairness_{args.backend}.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
 
-    print(f"input: {args.input}   n={len(rows)}   overall automation "
-          f"{report['automation_rate_pct']}%\n")
+    print(f"input: {args.input}   backend={args.backend}   n={len(rows)}   "
+          f"overall automation {report['automation_rate_pct']}%\n")
     print("QUALITY MEASURES (the condition is on quality, not throughput)")
     for field, measures in report["quality_by_group"].items():
         print(f"\n=== {field}")
@@ -286,7 +293,7 @@ def main() -> int:
         else:
             print(f"  within-intent gaps: none (no cell reached n={args.min_cell})")
         print()
-    print(f"wrote {out / 'fairness.json'}")
+    print(f"wrote {out / f'fairness_{args.backend}.json'}")
     return 0
 
 

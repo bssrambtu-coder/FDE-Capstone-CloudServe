@@ -1,2 +1,3 @@
 date,dataset,run_number,command,notes
 2026-09-04,validation,1,python3 -m evaluation.harness --input Capstone_Pack/05_Datasets/validation_tickets.json --output evaluation/results,Spine verification run. Tuning was done on the development set only; no parameter was changed in response to this run.
+2026-09-04,validation,2,python3 -m evaluation.harness --input Capstone_Pack/05_Datasets/validation_tickets.json --output evaluation/results_hybrid --backend hybrid,Hybrid backend verification. All tuning done on the development set; no parameter changed in response to this run.

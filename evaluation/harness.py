@@ -42,7 +42,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--corpus", default=CONFIG.corpus_path, help="documentation corpus")
     p.add_argument("--threshold", type=float, default=CONFIG.confidence_threshold)
     p.add_argument("--retrieval-floor", type=float, default=CONFIG.retrieval_floor)
-    p.add_argument("--backend", choices=("lexical", "chroma"), default="lexical")
+    p.add_argument("--backend", choices=("lexical", "chroma", "hybrid"),
+                   default=CONFIG.retrieval_backend,
+                   help="hybrid is recommended; lexical needs no dependencies")
+    p.add_argument("--semantic-gate", type=float, default=CONFIG.semantic_gate)
     p.add_argument("--db", default=CONFIG.sqlite_path, help="decision log database")
     p.add_argument("--use-provider", action="store_true",
                    help="call the model provider; without it generation is extractive")
@@ -70,6 +73,8 @@ def main(argv: list[str] | None = None) -> int:
         confidence_threshold=args.threshold,
         retrieval_floor=args.retrieval_floor,
         corpus_path=args.corpus,
+        retrieval_backend=args.backend,
+        semantic_gate=args.semantic_gate,
     )
 
     log.info("loading tickets from %s", in_path)

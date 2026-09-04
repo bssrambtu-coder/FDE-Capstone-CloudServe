@@ -46,7 +46,7 @@ tickets processed, `2` the input file was missing or empty.
 | `--output` | required | directory for results and metrics |
 | `--corpus` | `Capstone_Pack/05_Datasets/documentation.json` | documentation corpus |
 | `--threshold` | `0.80` | confidence below which a ticket escalates |
-| `--retrieval-floor` | `0.60` | relevance below which retrieval returns nothing |
+| `--retrieval-floor` | `0.42` | relevance below which retrieval returns nothing |
 | `--backend` | `lexical` | `lexical` (BM25, no deps) or `chroma` |
 | `--use-provider` | off | call the model provider; without it, generation is extractive |
 | `--limit` | all | process only the first N tickets |
@@ -87,12 +87,27 @@ falls back to extractive generation, marks the outcome degraded, and continues.
 The circuit breaker stops calling a dead provider after five consecutive
 failures.
 
-## Optional extras
+## Retrieval backends
+
+`lexical` is the default because it needs nothing installed, so the gate can
+never fail on a dependency. **`hybrid` is the recommended configuration**: it
+is the one the fairness condition holds under, and it is what the audit in
+`docs/fairness_audit.md` signs off.
 
 ```bash
 pip install -r requirements.txt
-python3 -m evaluation.harness --input <file> --output <dir> --backend chroma
+python3 -m evaluation.harness --input <file> --output <dir> --backend hybrid
 ```
+
+| Backend | Retrieval hit rate | Fluency gap | Regional gap | Needs |
+|---|---|---|---|---|
+| `lexical` | 79.8% | 8.3pp FAIL | 15.0pp FAIL | nothing |
+| **`hybrid`** | **96.4%** | **4.3pp ok** | **4.9pp ok** | extras |
+
+Measured on the 500 development tickets. `hybrid` ranks by reciprocal rank
+fusion over BM25 and `all-MiniLM-L6-v2`, and gates abstention on the semantic
+score alone. If the extras are missing it degrades to lexical and logs a
+warning, because degrading reopens the fairness gap.
 
 ## Attribution
 

@@ -34,7 +34,8 @@ class Pipeline:
         self.config = config
         self.classifier = classifier or Classifier()
         self.retriever = retriever or build_retriever(
-            config.corpus_path, floor=config.retrieval_floor
+            config.corpus_path, floor=config.retrieval_floor,
+            backend=config.retrieval_backend, gate=config.semantic_gate,
         )
         self.provider = provider
 

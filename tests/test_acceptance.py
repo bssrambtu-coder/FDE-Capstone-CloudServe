@@ -143,6 +143,40 @@ class A4Retrieve(unittest.TestCase):
         self.assertEqual([h.score for h in hits], sorted((h.score for h in hits), reverse=True))
 
 
+def _chroma_available() -> bool:
+    try:
+        import chromadb  # noqa: F401
+        import sentence_transformers  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+class A4HybridRetrieval(unittest.TestCase):
+    """The hybrid backend is the configuration the fairness condition holds
+    under. It is optional, so these skip rather than fail when the extras are
+    not installed - the zero-dependency default must still pass A12."""
+
+    @unittest.skipUnless(_chroma_available(), "chromadb/sentence-transformers not installed")
+    def test_hybrid_ranks_and_abstains(self):
+        from src.retrieve import HybridRetriever
+        corpus = load_corpus(CORPUS)
+        r = HybridRetriever(corpus, gate=0.60)
+        self.assertTrue(r.semantic_available, "semantic backend should be live")
+        hits = r.search("my api key returns 401 unauthorized", top_k=3)
+        self.assertTrue(hits)
+        self.assertIn("DOC-AUTH-004", {h.doc_id for h in hits})
+        self.assertEqual(r.search("the quick brown fox jumped over a lazy dog"), [])
+
+    def test_hybrid_degrades_to_lexical_without_the_extras(self):
+        """Constructed with an unreachable store, it must still answer rather
+        than raise - and must say so, because degrading reopens R-07."""
+        from src.retrieve import HybridRetriever
+        r = HybridRetriever(load_corpus(CORPUS), gate=0.60, path="/dev/null/nope")
+        hits = r.search("my api key returns 401 unauthorized", top_k=3)
+        self.assertTrue(hits, "must fall back rather than return nothing")
+
+
 class A5RoutingDeterminism(unittest.TestCase):
     def test_same_input_yields_the_same_decision(self):
         pipe = Pipeline()
