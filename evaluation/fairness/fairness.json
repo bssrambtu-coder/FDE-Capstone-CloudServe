@@ -1,0 +1,549 @@
+{
+ "input": "Capstone_Pack/05_Datasets/development_tickets.json",
+ "tickets": 500,
+ "automation_rate_pct": 69.0,
+ "quality_by_group": {
+  "customer_tier": {
+   "intent_accuracy": {
+    "measurable": true,
+    "by_group_pct": {
+     "business": 100.0,
+     "enterprise": 100.0,
+     "standard": 100.0
+    },
+    "group_sizes": {
+     "business": 164,
+     "enterprise": 83,
+     "standard": 253
+    },
+    "spread_pp": 0.0,
+    "within_tolerance": true
+   },
+   "routing_agreement": {
+    "measurable": true,
+    "by_group_pct": {
+     "business": 78.05,
+     "enterprise": 73.49,
+     "standard": 73.12
+    },
+    "group_sizes": {
+     "business": 164,
+     "enterprise": 83,
+     "standard": 253
+    },
+    "spread_pp": 4.93,
+    "within_tolerance": true
+   },
+   "retrieval_hit_rate": {
+    "measurable": true,
+    "by_group_pct": {
+     "business": 76.42,
+     "enterprise": 83.05,
+     "standard": 81.14
+    },
+    "group_sizes": {
+     "business": 123,
+     "enterprise": 59,
+     "standard": 175
+    },
+    "spread_pp": 6.63,
+    "within_tolerance": false
+   },
+   "citation_present": {
+    "measurable": true,
+    "by_group_pct": {
+     "business": 76.83,
+     "enterprise": 80.72,
+     "standard": 79.05
+    },
+    "group_sizes": {
+     "business": 164,
+     "enterprise": 83,
+     "standard": 253
+    },
+    "spread_pp": 3.89,
+    "within_tolerance": true
+   }
+  },
+  "customer_region": {
+   "intent_accuracy": {
+    "measurable": true,
+    "by_group_pct": {
+     "asia_pacific": 100.0,
+     "europe": 100.0,
+     "latin_america": 100.0,
+     "north_america": 100.0
+    },
+    "group_sizes": {
+     "asia_pacific": 119,
+     "europe": 151,
+     "latin_america": 60,
+     "north_america": 170
+    },
+    "spread_pp": 0.0,
+    "within_tolerance": true
+   },
+   "routing_agreement": {
+    "measurable": true,
+    "by_group_pct": {
+     "asia_pacific": 72.27,
+     "europe": 73.51,
+     "latin_america": 75.0,
+     "north_america": 77.65
+    },
+    "group_sizes": {
+     "asia_pacific": 119,
+     "europe": 151,
+     "latin_america": 60,
+     "north_america": 170
+    },
+    "spread_pp": 5.38,
+    "within_tolerance": false
+   },
+   "retrieval_hit_rate": {
+    "measurable": true,
+    "by_group_pct": {
+     "asia_pacific": 77.63,
+     "europe": 75.65,
+     "latin_america": 90.7,
+     "north_america": 81.3
+    },
+    "group_sizes": {
+     "asia_pacific": 76,
+     "europe": 115,
+     "latin_america": 43,
+     "north_america": 123
+    },
+    "spread_pp": 15.05,
+    "within_tolerance": false
+   },
+   "citation_present": {
+    "measurable": true,
+    "by_group_pct": {
+     "asia_pacific": 74.79,
+     "europe": 78.81,
+     "latin_america": 88.33,
+     "north_america": 77.65
+    },
+    "group_sizes": {
+     "asia_pacific": 119,
+     "europe": 151,
+     "latin_america": 60,
+     "north_america": 170
+    },
+    "spread_pp": 13.54,
+    "within_tolerance": false
+   }
+  },
+  "language_fluency": {
+   "intent_accuracy": {
+    "measurable": true,
+    "by_group_pct": {
+     "fluent": 100.0,
+     "non_fluent": 100.0
+    },
+    "group_sizes": {
+     "fluent": 380,
+     "non_fluent": 120
+    },
+    "spread_pp": 0.0,
+    "within_tolerance": true
+   },
+   "routing_agreement": {
+    "measurable": true,
+    "by_group_pct": {
+     "fluent": 75.0,
+     "non_fluent": 74.17
+    },
+    "group_sizes": {
+     "fluent": 380,
+     "non_fluent": 120
+    },
+    "spread_pp": 0.83,
+    "within_tolerance": true
+   },
+   "retrieval_hit_rate": {
+    "measurable": true,
+    "by_group_pct": {
+     "fluent": 81.85,
+     "non_fluent": 73.56
+    },
+    "group_sizes": {
+     "fluent": 270,
+     "non_fluent": 87
+    },
+    "spread_pp": 8.29,
+    "within_tolerance": false
+   },
+   "citation_present": {
+    "measurable": true,
+    "by_group_pct": {
+     "fluent": 80.26,
+     "non_fluent": 73.33
+    },
+    "group_sizes": {
+     "fluent": 380,
+     "non_fluent": 120
+    },
+    "spread_pp": 6.93,
+    "within_tolerance": false
+   }
+  }
+ },
+ "dimensions": {
+  "customer_tier": {
+   "groups": {
+    "business": {
+     "n": 164,
+     "observed_pct": 64.63,
+     "expected_pct": 66.64,
+     "residual_pp": -2.01,
+     "wilson_95_pct": [
+      57.06,
+      71.54
+     ],
+     "label_implied_pct": 64.63,
+     "top_intents": [
+      "compliance_request",
+      "data_residency",
+      "data_export"
+     ]
+    },
+    "enterprise": {
+     "n": 83,
+     "observed_pct": 75.9,
+     "expected_pct": 70.35,
+     "residual_pp": 5.56,
+     "wilson_95_pct": [
+      65.69,
+      83.83
+     ],
+     "label_implied_pct": 61.45,
+     "top_intents": [
+      "data_residency",
+      "database_issue",
+      "rollback_request"
+     ]
+    },
+    "standard": {
+     "n": 253,
+     "observed_pct": 69.57,
+     "expected_pct": 70.09,
+     "residual_pp": -0.52,
+     "wilson_95_pct": [
+      63.64,
+      74.91
+     ],
+     "label_implied_pct": 60.87,
+     "top_intents": [
+      "data_export",
+      "deployment_failure",
+      "api_usage_question"
+     ]
+    }
+   },
+   "observed_spread_pp": 11.27,
+   "residual_spread_pp": 7.57,
+   "label_implied_spread_pp": 3.76,
+   "largest_gap": {
+    "groups": [
+     "business",
+     "enterprise"
+    ],
+    "gap_pp": 11.27,
+    "p_value": 0.0719
+   },
+   "tolerance_pp": 5.0,
+   "observed_within_tolerance": false,
+   "residual_within_tolerance": false,
+   "within_intent": [
+    {
+     "intent": "onboarding",
+     "gap_pp": 33.33,
+     "highest": [
+      "standard",
+      58.33,
+      12
+     ],
+     "lowest": [
+      "business",
+      25.0,
+      8
+     ],
+     "p_value": 0.1421
+    },
+    {
+     "intent": "data_residency",
+     "gap_pp": 28.03,
+     "highest": [
+      "standard",
+      91.67,
+      12
+     ],
+     "lowest": [
+      "business",
+      63.64,
+      11
+     ],
+     "p_value": 0.1035
+    },
+    {
+     "intent": "sso_configuration",
+     "gap_pp": 16.67,
+     "highest": [
+      "business",
+      100.0,
+      10
+     ],
+     "lowest": [
+      "standard",
+      83.33,
+      12
+     ],
+     "p_value": 0.1757
+    },
+    {
+     "intent": "performance_degradation",
+     "gap_pp": 6.67,
+     "highest": [
+      "business",
+      40.0,
+      10
+     ],
+     "lowest": [
+      "standard",
+      33.33,
+      9
+     ],
+     "p_value": 0.7636
+    },
+    {
+     "intent": "database_issue",
+     "gap_pp": 4.17,
+     "highest": [
+      "standard",
+      91.67,
+      12
+     ],
+     "lowest": [
+      "business",
+      87.5,
+      8
+     ],
+     "p_value": 0.7609
+    },
+    {
+     "intent": "rollback_request",
+     "gap_pp": 0.79,
+     "highest": [
+      "standard",
+      78.57,
+      14
+     ],
+     "lowest": [
+      "business",
+      77.78,
+      9
+     ],
+     "p_value": 0.9641
+    }
+   ]
+  },
+  "customer_region": {
+   "groups": {
+    "asia_pacific": {
+     "n": 119,
+     "observed_pct": 64.71,
+     "expected_pct": 66.85,
+     "residual_pp": -2.14,
+     "wilson_95_pct": [
+      55.78,
+      72.71
+     ],
+     "label_implied_pct": 53.78,
+     "top_intents": [
+      "rollback_request",
+      "database_issue",
+      "sso_configuration"
+     ]
+    },
+    "europe": {
+     "n": 151,
+     "observed_pct": 69.54,
+     "expected_pct": 70.41,
+     "residual_pp": -0.87,
+     "wilson_95_pct": [
+      61.79,
+      76.32
+     ],
+     "label_implied_pct": 68.21,
+     "top_intents": [
+      "api_usage_question",
+      "authentication_failure",
+      "quota_or_overage"
+     ]
+    },
+    "latin_america": {
+     "n": 60,
+     "observed_pct": 83.33,
+     "expected_pct": 75.25,
+     "residual_pp": 8.08,
+     "wilson_95_pct": [
+      71.97,
+      90.69
+     ],
+     "label_implied_pct": 65.0,
+     "top_intents": [
+      "data_residency",
+      "data_export",
+      "rollback_request"
+     ]
+    },
+    "north_america": {
+     "n": 170,
+     "observed_pct": 66.47,
+     "expected_pct": 67.05,
+     "residual_pp": -0.58,
+     "wilson_95_pct": [
+      59.08,
+      73.13
+     ],
+     "label_implied_pct": 61.76,
+     "top_intents": [
+      "data_export",
+      "security_incident",
+      "data_residency"
+     ]
+    }
+   },
+   "observed_spread_pp": 18.62,
+   "residual_spread_pp": 10.22,
+   "label_implied_spread_pp": 14.43,
+   "largest_gap": {
+    "groups": [
+     "asia_pacific",
+     "latin_america"
+    ],
+    "gap_pp": 18.62,
+    "p_value": 0.0096
+   },
+   "tolerance_pp": 5.0,
+   "observed_within_tolerance": false,
+   "residual_within_tolerance": false,
+   "within_intent": [
+    {
+     "intent": "rollback_request",
+     "gap_pp": 11.11,
+     "highest": [
+      "asia_pacific",
+      77.78,
+      9
+     ],
+     "lowest": [
+      "north_america",
+      66.67,
+      9
+     ],
+     "p_value": 0.5987
+    }
+   ]
+  },
+  "language_fluency": {
+   "groups": {
+    "fluent": {
+     "n": 380,
+     "observed_pct": 70.0,
+     "expected_pct": 69.74,
+     "residual_pp": 0.26,
+     "wilson_95_pct": [
+      65.21,
+      74.39
+     ],
+     "label_implied_pct": 60.79,
+     "top_intents": [
+      "data_export",
+      "deployment_failure",
+      "compliance_request"
+     ]
+    },
+    "non_fluent": {
+     "n": 120,
+     "observed_pct": 65.83,
+     "expected_pct": 66.66,
+     "residual_pp": -0.82,
+     "wilson_95_pct": [
+      56.97,
+      73.71
+     ],
+     "label_implied_pct": 66.67,
+     "top_intents": [
+      "onboarding",
+      "security_incident",
+      "data_residency"
+     ]
+    }
+   },
+   "observed_spread_pp": 4.17,
+   "residual_spread_pp": 1.08,
+   "label_implied_spread_pp": 5.88,
+   "largest_gap": {
+    "groups": [
+     "fluent",
+     "non_fluent"
+    ],
+    "gap_pp": 4.17,
+    "p_value": 0.3896
+   },
+   "tolerance_pp": 5.0,
+   "observed_within_tolerance": true,
+   "residual_within_tolerance": true,
+   "within_intent": [
+    {
+     "intent": "database_issue",
+     "gap_pp": 11.11,
+     "highest": [
+      "non_fluent",
+      100.0,
+      8
+     ],
+     "lowest": [
+      "fluent",
+      88.89,
+      18
+     ],
+     "p_value": 0.3264
+    },
+    {
+     "intent": "onboarding",
+     "gap_pp": 10.0,
+     "highest": [
+      "fluent",
+      50.0,
+      12
+     ],
+     "lowest": [
+      "non_fluent",
+      40.0,
+      10
+     ],
+     "p_value": 0.639
+    },
+    {
+     "intent": "data_residency",
+     "gap_pp": 2.22,
+     "highest": [
+      "fluent",
+      80.0,
+      20
+     ],
+     "lowest": [
+      "non_fluent",
+      77.78,
+      9
+     ],
+     "p_value": 0.8913
+    }
+   ]
+  }
+ }
+}

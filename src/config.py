@@ -34,7 +34,7 @@ class Config:
     # Retrieval. Below the floor we return nothing rather than something
     # irrelevant, which the Build Specification requires (A4).
     retrieval_top_k: int = _i("RETRIEVAL_TOP_K", 5)
-    retrieval_floor: float = _f("RETRIEVAL_FLOOR", 0.60)
+    retrieval_floor: float = _f("RETRIEVAL_FLOOR", 0.42)
 
     # Resilience (A11).
     provider_timeout_s: float = _f("PROVIDER_TIMEOUT_S", 20.0)

@@ -116,7 +116,7 @@ class A4Retrieve(unittest.TestCase):
     def setUpClass(cls):
         cls.corpus = load_corpus(CORPUS)
         cls.ids = {d["doc_id"] for d in cls.corpus}
-        cls.r = LexicalRetriever(cls.corpus, floor=0.60)
+        cls.r = LexicalRetriever(cls.corpus, floor=0.42)
 
     def test_sources_resolve_to_the_real_corpus(self):
         for t in list(load_tickets(TICKETS))[:30]:
@@ -126,6 +126,16 @@ class A4Retrieve(unittest.TestCase):
     def test_returns_nothing_rather_than_something_irrelevant(self):
         self.assertEqual(self.r.search("the quick brown fox jumped over a lazy dog"), [])
         self.assertEqual(self.r.search(""), [])
+        self.assertEqual(self.r.search("zzzz qqqq wwww"), [])
+
+    def test_a_query_matching_one_word_of_many_scores_low(self):
+        """The normalising mass counts terms the corpus has never seen, so
+        coverage matters: matching one word out of nine must not score as if
+        it matched all nine."""
+        scored = LexicalRetriever(self.corpus, floor=0.0)
+        hits = scored.search("the quick brown fox jumped over a lazy dog")
+        self.assertTrue(hits, "expected a scored-but-rejected result")
+        self.assertLess(hits[0].score, 0.42)
 
     def test_results_are_ranked_and_capped(self):
         hits = self.r.search("api key 401 unauthorized rotation", top_k=3)

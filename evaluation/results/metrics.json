@@ -1,17 +1,17 @@
 {
  "volume": {
   "tickets_processed": 80,
-  "answered_automatically": 54,
-  "escalated": 26,
+  "answered_automatically": 52,
+  "escalated": 28,
   "blocked_by_guardrails": 0,
   "pipeline_errors": 0,
   "degraded_responses": 0
  },
  "business": {
-  "first_contact_resolution_pct": 67.5,
-  "escalation_rate_pct": 32.5,
-  "mean_response_time_ms": 0.24,
-  "median_response_time_ms": 0.27,
+  "first_contact_resolution_pct": 65.0,
+  "escalation_rate_pct": 35.0,
+  "mean_response_time_ms": 0.37,
+  "median_response_time_ms": 0.4,
   "customer_satisfaction": null,
   "customer_satisfaction_note": "Not measurable from an unattended batch run; requires post-response survey.",
   "repeat_contacts": null,
@@ -180,15 +180,15 @@
    }
   },
   "retrieval": {
-   "hit_rate_pct": 77.36,
+   "hit_rate_pct": 79.25,
    "tickets_expecting_a_document": 53,
-   "correct_abstention_pct": 44.44,
+   "correct_abstention_pct": 55.56,
    "tickets_expecting_no_document": 27
   },
   "latency_ms": {
-   "median": 0.27,
-   "p95": 0.46,
-   "max": 0.55
+   "median": 0.4,
+   "p95": 0.73,
+   "max": 0.98
   },
   "labels_present": true
  },
@@ -196,16 +196,18 @@
   "decisions_logged": 80,
   "tickets_processed": 80,
   "log_reconciles": true,
-  "guardrail_activations_by_type": {},
+  "guardrail_activations_by_type": {
+   "unsupported_claims": 1
+  },
   "private_data_detections_in_outbound": 0,
-  "responses_released": 54,
+  "responses_released": 52,
   "fairness": {
    "customer_region": {
     "automation_rate_pct": {
-     "asia_pacific": 61.9,
-     "europe": 68.0,
+     "asia_pacific": 66.67,
+     "europe": 64.0,
      "latin_america": 57.14,
-     "north_america": 74.07
+     "north_america": 66.67
     },
     "group_sizes": {
      "asia_pacific": 21,
@@ -213,35 +215,35 @@
      "latin_america": 7,
      "north_america": 27
     },
-    "spread_pp": 16.93,
+    "spread_pp": 9.52,
     "within_tolerance": false,
     "tolerance_pp": 5.0
    },
    "customer_tier": {
     "automation_rate_pct": {
-     "business": 73.33,
-     "enterprise": 87.5,
-     "standard": 59.52
+     "business": 80.0,
+     "enterprise": 75.0,
+     "standard": 52.38
     },
     "group_sizes": {
      "business": 30,
      "enterprise": 8,
      "standard": 42
     },
-    "spread_pp": 27.98,
+    "spread_pp": 27.62,
     "within_tolerance": false,
     "tolerance_pp": 5.0
    },
    "language_fluency": {
     "automation_rate_pct": {
-     "fluent": 67.21,
-     "non_fluent": 68.42
+     "fluent": 65.57,
+     "non_fluent": 63.16
     },
     "group_sizes": {
      "fluent": 61,
      "non_fluent": 19
     },
-    "spread_pp": 1.21,
+    "spread_pp": 2.42,
     "within_tolerance": true,
     "tolerance_pp": 5.0
    }
@@ -251,14 +253,14 @@
   "enabled": false
  },
  "run": {
-  "run_id": "bfd7dbc3da09",
+  "run_id": "bbdf607acbf0",
   "input": "Capstone_Pack/05_Datasets/validation_tickets.json",
   "tickets": 80,
-  "wall_clock_seconds": 0.03,
-  "tickets_per_second": 2490.18,
+  "wall_clock_seconds": 0.05,
+  "tickets_per_second": 1737.17,
   "config": {
    "threshold": 0.8,
-   "retrieval_floor": 0.6,
+   "retrieval_floor": 0.42,
    "backend": "lexical",
    "retriever": "lexical-bm25",
    "provider_enabled": false

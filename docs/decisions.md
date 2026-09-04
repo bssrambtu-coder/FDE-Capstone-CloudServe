@@ -129,14 +129,38 @@ The computed figures are used throughout. CSAT and repeat contacts cannot be
 measured from an unattended batch run at all, so the metrics report returns
 null with a stated reason rather than a plausible number.
 
+## D9 — Retrieval scores are coverage-aware; the floor is 0.42
+
+Two changes came out of the fairness audit (`docs/fairness_audit.md`):
+
+- **Light stemming** on the retrieval path only. Lifts hit rate 80.1% to
+  87.4% at an unchanged floor. The classifier keeps unstemmed tokens, because
+  the committed vocabulary in `models/` was fitted on those.
+- **Coverage-aware normalisation.** The relevance score previously divided by
+  the idf mass of only the *matched* query terms, so a nine-word query
+  matching one rare word could score above 1.0. Unseen terms now count toward
+  the normalising mass, so matching one word of nine scores near a ninth. This
+  was a real defect, not a tuning choice: it was letting single-term matches
+  through as highly relevant.
+
+The floor moved 0.60 to 0.42 after the rescale. On validation this raised
+correct abstention from 40.7% to 55.6% with hit rate holding at 79.3%.
+
 ## Open items
 
-- Fairness: automation rate spread is **28pp by customer tier** and **17pp by
-  region** against a 5pp condition. Both exceed tolerance. Needs investigation
-  before this could go live — the likely cause is intent mix differing by
-  group rather than differential treatment, but that must be shown, not
-  assumed. `language_fluency` shows a 1.2pp spread, so a gap appearing there
-  later would be ours.
+- **Fairness condition is BREACHED and unmitigated.** Retrieval hit rate
+  differs by **8.29pp between fluent and non-fluent customers** (81.85% vs
+  73.56%) against a 5pp condition, and the mechanism is measured: BM25 rewards
+  vocabulary overlap, so non-standard phrasing scores lower, and an absolute
+  threshold cuts it disproportionately. Abstention and fairness trade directly
+  against each other, so no threshold setting satisfies both. The fix is
+  semantic retrieval (D6). Risk register entry R-07 in
+  `docs/fairness_audit.md`; do not close it on the mechanism argument, close it
+  on a re-audit.
+- The earlier 28pp tier gap was small-sample noise (n=8 on validation). On 500
+  tickets the tier residual is 4.44pp and passes. The regional gap is largely
+  inherited: the experts' own labels vary by 14.43pp across regions against our
+  12.77pp.
 - Confidence threshold is still the illustrative 0.80 from the Brief. It has
   not been swept. With calibrated confidence at 0.988 for almost everything,
   the threshold currently does very little work; the policy gate (D5) is doing
