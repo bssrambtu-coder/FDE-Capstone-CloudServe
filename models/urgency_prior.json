@@ -1,0 +1,115 @@
+{
+ "default": "medium",
+ "by_intent": {
+  "deployment_failure": {
+   "urgency": "high",
+   "confidence": 0.4815,
+   "n": 27
+  },
+  "api_key_issue": {
+   "urgency": "medium",
+   "confidence": 0.7222,
+   "n": 18
+  },
+  "compliance_request": {
+   "urgency": "medium",
+   "confidence": 0.5385,
+   "n": 26
+  },
+  "rollback_request": {
+   "urgency": "high",
+   "confidence": 0.8214,
+   "n": 28
+  },
+  "feature_request": {
+   "urgency": "medium",
+   "confidence": 0.5,
+   "n": 20
+  },
+  "configuration_help": {
+   "urgency": "medium",
+   "confidence": 0.7647,
+   "n": 17
+  },
+  "authentication_failure": {
+   "urgency": "medium",
+   "confidence": 0.4,
+   "n": 20
+  },
+  "data_export": {
+   "urgency": "medium",
+   "confidence": 0.5517,
+   "n": 29
+  },
+  "sso_configuration": {
+   "urgency": "medium",
+   "confidence": 0.4231,
+   "n": 26
+  },
+  "security_incident": {
+   "urgency": "high",
+   "confidence": 0.9231,
+   "n": 26
+  },
+  "account_access": {
+   "urgency": "medium",
+   "confidence": 0.4545,
+   "n": 22
+  },
+  "api_usage_question": {
+   "urgency": "low",
+   "confidence": 0.5,
+   "n": 24
+  },
+  "database_issue": {
+   "urgency": "medium",
+   "confidence": 0.5,
+   "n": 26
+  },
+  "rate_limit": {
+   "urgency": "medium",
+   "confidence": 0.6154,
+   "n": 13
+  },
+  "billing_query": {
+   "urgency": "medium",
+   "confidence": 0.4583,
+   "n": 24
+  },
+  "integration_help": {
+   "urgency": "medium",
+   "confidence": 0.5714,
+   "n": 21
+  },
+  "performance_degradation": {
+   "urgency": "high",
+   "confidence": 0.4348,
+   "n": 23
+  },
+  "quota_or_overage": {
+   "urgency": "medium",
+   "confidence": 0.4348,
+   "n": 23
+  },
+  "data_residency": {
+   "urgency": "medium",
+   "confidence": 0.5517,
+   "n": 29
+  },
+  "webhook_issue": {
+   "urgency": "medium",
+   "confidence": 0.381,
+   "n": 21
+  },
+  "unclear_request": {
+   "urgency": "medium",
+   "confidence": 0.6667,
+   "n": 15
+  },
+  "onboarding": {
+   "urgency": "low",
+   "confidence": 0.5,
+   "n": 22
+  }
+ }
+}

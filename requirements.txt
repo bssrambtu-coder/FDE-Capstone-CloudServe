@@ -1,0 +1,20 @@
+# The spine runs on the standard library alone: no install step is required to
+# clear the gate, and the test suite has no third-party dependency.
+#
+# The packages below are optional and add the stack named in the Project Brief
+# (Chroma + all-MiniLM-L6-v2 retrieval, the FastAPI interface). Install with:
+#     pip install -r requirements.txt
+#
+# Pins from 06_Configuration/requirements.txt were not carried over verbatim:
+# chromadb==0.3.21 is a pydantic v1 release and cannot co-exist with
+# pydantic==2.0.0, so that pin set does not resolve. See docs/decisions.md.
+
+chromadb>=0.5,<2
+sentence-transformers>=3,<6
+fastapi>=0.110,<1
+uvicorn>=0.29,<1
+python-dotenv>=1,<2
+
+# Testing. The suite also runs without these via:
+#     python -m unittest discover -s tests
+pytest>=8,<9

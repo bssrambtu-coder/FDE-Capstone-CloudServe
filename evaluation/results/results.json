@@ -1,0 +1,1622 @@
+[
+ {
+  "ticket_id": "VAL-0001",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'api_key_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-004.",
+  "rule": "confident_and_supported",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-004"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# API key rotation and scope management\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A previously working key returns 401 Unauthorized\n- A key works for some endpoints and not others\n- A key needs replacing after accidental exposure\n\n## Common causes\n\n- The key was revoked or reached its configured expiry\n- The key was issued with a scope that excludes the endpoint being called\n- The key belongs to a deleted user and was removed with the account\n\n## Resolution\n\n1. [DOC-AUTH-004] To rotate without downtime, create the replacement key first, deploy it, confirm traffic has moved, then revoke the old key. [DOC-AUTH-004]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-004"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.46,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0002",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.05,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0003",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.04,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0004",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'authentication_failure' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-002.",
+  "rule": "confident_and_supported",
+  "intent": "authentication_failure",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Multi-factor authentication setup and recovery\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The authenticator code is rejected as invalid\n- A user has lost the device holding their authenticator\n- Recovery codes were never downloaded\n\n## Common causes\n\n- Device clock drift of more than thirty seconds invalidates time-based codes\n- The authenticator was enrolled against a different account\n- Recovery codes were regenerated, invalidating the older set\n\n## Resolution\n\n1. [DOC-AUTH-002] Ask the user to check that automatic time synchronisation is enabled on the device generating the code. [DOC-AUTH-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.38,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0005",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'api_usage_question' with 100% confidence and supported by 1 documentation passage(s): DOC-API-002.",
+  "rule": "confident_and_supported",
+  "intent": "api_usage_question",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Pagination and handling large result sets\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Only the first page of results is returned\n- Iterating through results misses or duplicates records\n- Large queries time out\n\n## Common causes\n\n- The cursor from the previous response was not passed to the next request\n- Offset pagination was used against a changing collection\n- The page size requested exceeds the maximum\n\n## Resolution\n\n1. [DOC-API-002] Long-running iterations should handle expiry by restarting from a recorded checkpoint. [DOC-API-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.3,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0006",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "authentication_failure",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.13,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0007",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.03,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0008",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'account_access' with 100% confidence and supported by 1 documentation passage(s): DOC-ACCT-001.",
+  "rule": "confident_and_supported",
+  "intent": "account_access",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-ACCT-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Managing team members, roles and permissions\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A user cannot access a project they should be able to\n- A departing user needs removing\n- Permissions need narrowing after a review\n\n## Common causes\n\n- The role was granted at project scope rather than organisation scope\n- The invitation was never accepted and the account does not exist\n- A group membership grants broader access than the direct role suggests\n\n## Resolution\n\n1. [DOC-ACCT-001] Check the effective permissions view for the user, which resolves direct roles and group memberships together. [DOC-ACCT-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-ACCT-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0009",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "'compliance_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "compliance_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-SEC-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Audit logging and compliance evidence\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- An auditor has requested access records\n- An event that should be logged cannot be found\n- Log retention is shorter than a policy requires\n\n## Common causes\n\n- The event predates the retention window\n- The event type is not covered by the audit log\n- The organisation is on a plan with shorter retention\n\n## Resolution\n\n1. [DOC-SEC-003] Note that read access to resources is not logged on Business plans, only administrative and configuration changes. [DOC-SEC-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-SEC-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.16,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0010",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Set a usage alert on the billing page so that unexpected accrual is noticed during the period rather than at the end of it. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.32,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0011",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.3,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0012",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0013",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0014",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0015",
+  "channel": "forum",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.03,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0016",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "performance_degradation",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0017",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.8,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.02,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0018",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'api_usage_question' with 100% confidence and supported by 1 documentation passage(s): DOC-API-002.",
+  "rule": "confident_and_supported",
+  "intent": "api_usage_question",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Pagination and handling large result sets\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Only the first page of results is returned\n- Iterating through results misses or duplicates records\n- Large queries time out\n\n## Common causes\n\n- The cursor from the previous response was not passed to the next request\n- Offset pagination was used against a changing collection\n- The page size requested exceeds the maximum\n\n## Resolution\n\n1. [DOC-API-002] Long-running iterations should handle expiry by restarting from a recorded checkpoint. [DOC-API-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0019",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "account_access",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.08,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0020",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "'feature_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "feature_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.03,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0021",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.26,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0022",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "performance_degradation",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.08,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0023",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "onboarding",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0024",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0025",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'deployment_failure' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-001.",
+  "rule": "confident_and_supported",
+  "intent": "deployment_failure",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Container deployments failing during the health check phase\n\n**Applies to:** Container Service\n\n## Symptoms\n\n- The deployment reaches running and then rolls back\n- Logs show repeated health check timeouts\n- The service works locally but not when deployed\n\n## Common causes\n\n- The health endpoint takes longer to respond than the configured timeout\n- The container listens on a different port than the service declares\n- A required environment variable is absent in the deployed environment\n\n## Resolution\n\n1. [DOC-DEPLOY-001] ## Notes\n\nA health check must return within the timeout using only local state. [DOC-DEPLOY-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.3,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0026",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 2 documentation passage(s): DOC-DATA-003, DOC-DATA-002.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003",
+   "DOC-DATA-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] ## Notes\n\nMetadata such as account names and billing records is stored centrally regardless of the data region. [DOC-DATA-003] # Backups, retention and point-in-time restore\n\n**Applies to:** Managed Database\n\n## Symptoms\n\n- Data was deleted and needs recovering\n- A restore is taking longer than expected\n- A backup is older than expected\n\n## Common causes\n\n- Automated backups run daily and retention depends on the plan\n- Restore time scales with database size\n- Point-in-time recovery is available only where continuous archiving is enabled\n\n## Resolution\n\n1. [DOC-DATA-002] Allow roughly ten minutes per hundred gigabytes for the restore, and considerably longer where the instance is also under load. [DOC-DATA-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003",
+   "DOC-DATA-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.55,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0027",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'quota_or_overage' with 100% confidence and supported by 2 documentation passage(s): DOC-BILL-003, DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "quota_or_overage",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-003",
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Usage limits, overage and spend controls\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Service was throttled after a traffic increase\n- Overage charges appeared unexpectedly\n- A spend cap stopped a production workload\n\n## Common causes\n\n- Plan allowance was consumed before the end of the period\n- A spend cap was configured and reached\n- Overage protection is disabled, so usage continued beyond the allowance\n\n## Resolution\n\n1. [DOC-BILL-003] Check the current period usage against the plan allowance on the billing page. [DOC-BILL-003] # Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Set a usage alert on the billing page so that unexpected accrual is noticed during the period rather than at the end of it. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-003",
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.48,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0028",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "deployment_failure",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.09,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0029",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "onboarding",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.06,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0030",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "'feature_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "feature_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.03,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0031",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0032",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "'feature_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "feature_request",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.04,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0033",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'webhook_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-API-003.",
+  "rule": "confident_and_supported",
+  "intent": "webhook_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Webhook delivery, retries and signature verification\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Webhooks are not arriving at the configured endpoint\n- The same event is delivered more than once\n- Signature verification fails\n\n## Common causes\n\n- The endpoint returned a non-2xx status and delivery is being retried\n- The endpoint responded too slowly and the delivery timed out\n- The signature was computed over a parsed body rather than the raw bytes\n\n## Resolution\n\n1. [DOC-API-003] Check the webhook delivery log, which records every attempt with the response status and body for the last seven days. [DOC-API-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0034",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'rollback_request' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-002.",
+  "rule": "confident_and_supported",
+  "intent": "rollback_request",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Rolling back a failed release\n\n**Applies to:** Container Service, Functions\n\n## Symptoms\n\n- A release has introduced errors and must be reverted\n- The previous revision is needed while a fix is prepared\n\n## Common causes\n\n- A defect reached production that testing did not catch\n- A configuration change had unintended effects\n\n## Resolution\n\n1. [DOC-DEPLOY-002] If the release included a database migration, roll the migration back before the service, or the older code will encounter a schema it does not expect. [DOC-DEPLOY-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0035",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "'unclear_request' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "unclear_request",
+  "urgency": "medium",
+  "confidence": 0.8,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.02,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0036",
+  "channel": "forum",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "onboarding",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0037",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 1 documentation passage(s): DOC-DATA-003.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] Review the backup replication setting if a single-region requirement applies, since cross-region replication is enabled by default. [DOC-DATA-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0038",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'performance_degradation' with 100% confidence and supported by 1 documentation passage(s): DOC-PERF-001.",
+  "rule": "confident_and_supported",
+  "intent": "performance_degradation",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-PERF-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Diagnosing elevated response latency\n\n**Applies to:** All compute services\n\n## Symptoms\n\n- Response times have increased without a code change\n- The 95th percentile is far above the median\n- Latency rises at predictable times of day\n\n## Common causes\n\n- The service is running close to its memory limit and spending time in garbage collection\n- A downstream dependency has slowed and the delay is propagating\n- Instance count is not scaling with the load pattern\n\n## Resolution\n\n1. [DOC-PERF-001] Compare median and 95th percentile latency on the metrics page. [DOC-PERF-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-PERF-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0039",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'api_key_issue' with 100% confidence and supported by 2 documentation passage(s): DOC-AUTH-004, DOC-SEC-001.",
+  "rule": "confident_and_supported",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-004",
+   "DOC-SEC-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# API key rotation and scope management\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A previously working key returns 401 Unauthorized\n- A key works for some endpoints and not others\n- A key needs replacing after accidental exposure\n\n## Common causes\n\n- The key was revoked or reached its configured expiry\n- The key was issued with a scope that excludes the endpoint being called\n- The key belongs to a deleted user and was removed with the account\n\n## Resolution\n\n1. [DOC-AUTH-004] To rotate without downtime, create the replacement key first, deploy it, confirm traffic has moved, then revoke the old key. [DOC-AUTH-004] # Responding to a suspected account compromise\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Unrecognised activity appears in the audit log\n- A user reports credentials may have been exposed\n- Resources were created that nobody claims\n\n## Common causes\n\n- Credentials were reused from a service that suffered a breach\n- An API key was committed to a public repository\n- A former team member retained access after leaving\n\n## Resolution\n\n1. [DOC-SEC-001] This is disruptive and it is the correct first action. [DOC-SEC-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-004",
+   "DOC-SEC-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.51,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0040",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0041",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.25,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0042",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'configuration_help' with 100% confidence and supported by 2 documentation passage(s): DOC-DEPLOY-004, DOC-ACCT-002.",
+  "rule": "confident_and_supported",
+  "intent": "configuration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-004",
+   "DOC-ACCT-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Configuring environment variables and secrets\n\n**Applies to:** All compute services\n\n## Symptoms\n\n- The application cannot read a variable that appears to be set\n- A secret value appears in plain text in the logs\n- Configuration differs between environments unexpectedly\n\n## Common causes\n\n- The variable was set at project scope but read at service scope\n- The application logs its configuration at startup\n- An environment override exists that is not visible on the main settings page\n\n## Resolution\n\n1. [DOC-DEPLOY-004] Review the environment overrides page, which lists values that differ from the defaults for each environment. [DOC-DEPLOY-004] Use a separate project per environment where isolation of configuration and billing matters. [DOC-ACCT-002] # Organisation setup and project structure\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Resources are difficult to separate for billing\n- Environments are sharing configuration unintentionally\n- A project needs moving between organisations\n\n## Common causes\n\n- Environments were created as folders within one project rather than as separate projects\n- Configuration was set at organisation scope and inherited everywhere\n- Projects cannot move between organisations without a migration\n\n## Resolution\n\n1. [DOC-ACCT-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-004",
+   "DOC-ACCT-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.41,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0043",
+  "channel": "forum",
+  "action": "escalated",
+  "reason": "'security_incident' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "security_incident",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-SEC-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Responding to a suspected account compromise\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Unrecognised activity appears in the audit log\n- A user reports credentials may have been exposed\n- Resources were created that nobody claims\n\n## Common causes\n\n- Credentials were reused from a service that suffered a breach\n- An API key was committed to a public repository\n- A former team member retained access after leaving\n\n## Resolution\n\n1. [DOC-SEC-001] Review the audit log for the period in question, filtering by the affected user, and record anything unexpected before it ages out. [DOC-SEC-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-SEC-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.13,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0044",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 2 documentation passage(s): DOC-BILL-001, DOC-BILL-002.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001] # Changing plans, and how proration is calculated\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The charge after an upgrade differs from the advertised price\n- A downgrade did not take effect immediately\n- A credit is expected but not visible\n\n## Common causes\n\n- The upgrade was prorated across the remainder of the billing period\n- Downgrades are applied at the end of the current period rather than immediately\n- The credit was applied to the next invoice rather than refunded\n\n## Resolution\n\n1. [DOC-BILL-002] Credits from a downgrade or an adjustment are applied against the next invoice by default rather than refunded to the payment method. [DOC-BILL-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.41,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0045",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_export' with 100% confidence and supported by 1 documentation passage(s): DOC-DATA-001.",
+  "rule": "confident_and_supported",
+  "intent": "data_export",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Exporting account data and scheduled extracts\n\n**Applies to:** All plans\n\n## Symptoms\n\n- An export has not completed\n- The download link has expired\n- The export is missing recent records\n\n## Common causes\n\n- Large exports are queued and processed asynchronously\n- Download links are valid for twenty-four hours\n- The export captured a snapshot taken when the job started\n\n## Resolution\n\n1. [DOC-DATA-001] Note that the export reflects the moment the job began, so records created during processing are not included. [DOC-DATA-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.25,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0046",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'api_usage_question' with 100% confidence and supported by 1 documentation passage(s): DOC-API-002.",
+  "rule": "confident_and_supported",
+  "intent": "api_usage_question",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Pagination and handling large result sets\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Only the first page of results is returned\n- Iterating through results misses or duplicates records\n- Large queries time out\n\n## Common causes\n\n- The cursor from the previous response was not passed to the next request\n- Offset pagination was used against a changing collection\n- The page size requested exceeds the maximum\n\n## Resolution\n\n1. [DOC-API-002] Pass the next_cursor value from each response as the cursor parameter of the following request, and stop when it is null. [DOC-API-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.24,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0047",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'rate_limit' with 100% confidence and supported by 1 documentation passage(s): DOC-API-001.",
+  "rule": "confident_and_supported",
+  "intent": "rate_limit",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\nSearch and export endpoints are more expensive and are limited more tightly than reads. [DOC-API-001] They give the limit, the remaining allowance and the reset time, which is more reliable than inferring the limit from behaviour. [DOC-API-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.2,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0048",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "'security_incident' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "security_incident",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-SEC-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Responding to a suspected account compromise\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Unrecognised activity appears in the audit log\n- A user reports credentials may have been exposed\n- Resources were created that nobody claims\n\n## Common causes\n\n- Credentials were reused from a service that suffered a breach\n- An API key was committed to a public repository\n- A former team member retained access after leaving\n\n## Resolution\n\n1. [DOC-SEC-001] ## Notes\n\nAudit logs are retained for ninety days on Business plans and one year on Enterprise. [DOC-SEC-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-SEC-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.11,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0049",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'api_key_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-004.",
+  "rule": "confident_and_supported",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-004"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# API key rotation and scope management\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A previously working key returns 401 Unauthorized\n- A key works for some endpoints and not others\n- A key needs replacing after accidental exposure\n\n## Common causes\n\n- The key was revoked or reached its configured expiry\n- The key was issued with a scope that excludes the endpoint being called\n- The key belongs to a deleted user and was removed with the account\n\n## Resolution\n\n1. [DOC-AUTH-004] To rotate without downtime, create the replacement key first, deploy it, confirm traffic has moved, then revoke the old key. [DOC-AUTH-004]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-004"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0050",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'onboarding' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-001.",
+  "rule": "confident_and_supported",
+  "intent": "onboarding",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Container deployments failing during the health check phase\n\n**Applies to:** Container Service\n\n## Symptoms\n\n- The deployment reaches running and then rolls back\n- Logs show repeated health check timeouts\n- The service works locally but not when deployed\n\n## Common causes\n\n- The health endpoint takes longer to respond than the configured timeout\n- The container listens on a different port than the service declares\n- A required environment variable is absent in the deployed environment\n\n## Resolution\n\n1. [DOC-DEPLOY-001] Increase the initial delay if the application needs time to warm up before it can answer. [DOC-DEPLOY-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0051",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'integration_help' with 100% confidence and supported by 1 documentation passage(s): DOC-INT-002.",
+  "rule": "confident_and_supported",
+  "intent": "integration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-INT-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Third party monitoring and log forwarding\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- Logs are not arriving at the external destination\n- Metrics are delayed compared with the console\n- Forwarded volume is higher than expected\n\n## Common causes\n\n- The destination rejected the payload and forwarding paused\n- Aggregation introduces a delay before metrics are forwarded\n- Debug-level logs are being forwarded along with the rest\n\n## Resolution\n\n1. [DOC-INT-002] ## Notes\n\nForwarding pauses after one hour of consecutive failures and must be resumed manually once the destination is healthy. [DOC-INT-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-INT-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.31,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0052",
+  "channel": "chat",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "authentication_failure",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.12,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0053",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 2 documentation passage(s): DOC-BILL-001, DOC-BILL-002.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001] # Changing plans, and how proration is calculated\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The charge after an upgrade differs from the advertised price\n- A downgrade did not take effect immediately\n- A credit is expected but not visible\n\n## Common causes\n\n- The upgrade was prorated across the remainder of the billing period\n- Downgrades are applied at the end of the current period rather than immediately\n- The credit was applied to the next invoice rather than refunded\n\n## Resolution\n\n1. [DOC-BILL-002] Credits from a downgrade or an adjustment are applied against the next invoice by default rather than refunded to the payment method. [DOC-BILL-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.45,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0054",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 1 documentation passage(s): DOC-DATA-003.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] ## Notes\n\nMetadata such as account names and billing records is stored centrally regardless of the data region. [DOC-DATA-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0055",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'integration_help' with 100% confidence and supported by 1 documentation passage(s): DOC-INT-001.",
+  "rule": "confident_and_supported",
+  "intent": "integration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-INT-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Connecting continuous integration pipelines\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The pipeline cannot authenticate against CloudServe\n- Deployments succeed manually but fail from the pipeline\n- The pipeline has broader access than intended\n\n## Common causes\n\n- A personal key was used rather than a service account\n- The pipeline environment lacks the configuration present locally\n- The service account was granted an organisation-wide role\n\n## Resolution\n\n1. [DOC-INT-001] Create a service account for the pipeline rather than using a personal key, so that access survives staff changes. [DOC-INT-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-INT-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.25,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0056",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "deployment_failure",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0057",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'deployment_failure' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-001.",
+  "rule": "confident_and_supported",
+  "intent": "deployment_failure",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Container deployments failing during the health check phase\n\n**Applies to:** Container Service\n\n## Symptoms\n\n- The deployment reaches running and then rolls back\n- Logs show repeated health check timeouts\n- The service works locally but not when deployed\n\n## Common causes\n\n- The health endpoint takes longer to respond than the configured timeout\n- The container listens on a different port than the service declares\n- A required environment variable is absent in the deployed environment\n\n## Resolution\n\n1. [DOC-DEPLOY-001] ## Notes\n\nA health check must return within the timeout using only local state. [DOC-DEPLOY-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.3,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0058",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'api_key_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-004.",
+  "rule": "confident_and_supported",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-004"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# API key rotation and scope management\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A previously working key returns 401 Unauthorized\n- A key works for some endpoints and not others\n- A key needs replacing after accidental exposure\n\n## Common causes\n\n- The key was revoked or reached its configured expiry\n- The key was issued with a scope that excludes the endpoint being called\n- The key belongs to a deleted user and was removed with the account\n\n## Resolution\n\n1. [DOC-AUTH-004] If a key has been exposed publicly, revoke it immediately rather than waiting for the rotation window. [DOC-AUTH-004]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-004"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0059",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'configuration_help' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-004.",
+  "rule": "confident_and_supported",
+  "intent": "configuration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-004"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Configuring environment variables and secrets\n\n**Applies to:** All compute services\n\n## Symptoms\n\n- The application cannot read a variable that appears to be set\n- A secret value appears in plain text in the logs\n- Configuration differs between environments unexpectedly\n\n## Common causes\n\n- The variable was set at project scope but read at service scope\n- The application logs its configuration at startup\n- An environment override exists that is not visible on the main settings page\n\n## Resolution\n\n1. [DOC-DEPLOY-004] ## Notes\n\nA secret that has been printed to logs should be treated as exposed and rotated, even if the logs are private. [DOC-DEPLOY-004]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-004"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0060",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'webhook_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-API-003.",
+  "rule": "confident_and_supported",
+  "intent": "webhook_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Webhook delivery, retries and signature verification\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Webhooks are not arriving at the configured endpoint\n- The same event is delivered more than once\n- Signature verification fails\n\n## Common causes\n\n- The endpoint returned a non-2xx status and delivery is being retried\n- The endpoint responded too slowly and the delivery timed out\n- The signature was computed over a parsed body rather than the raw bytes\n\n## Resolution\n\n1. [DOC-API-003] Check the webhook delivery log, which records every attempt with the response status and body for the last seven days. [DOC-API-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.25,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0061",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'webhook_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-API-003.",
+  "rule": "confident_and_supported",
+  "intent": "webhook_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Webhook delivery, retries and signature verification\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Webhooks are not arriving at the configured endpoint\n- The same event is delivered more than once\n- Signature verification fails\n\n## Common causes\n\n- The endpoint returned a non-2xx status and delivery is being retried\n- The endpoint responded too slowly and the delivery timed out\n- The signature was computed over a parsed body rather than the raw bytes\n\n## Resolution\n\n1. [DOC-API-003] Check the webhook delivery log, which records every attempt with the response status and body for the last seven days. [DOC-API-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.24,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0062",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'integration_help' with 100% confidence and supported by 1 documentation passage(s): DOC-INT-002.",
+  "rule": "confident_and_supported",
+  "intent": "integration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-INT-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Third party monitoring and log forwarding\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- Logs are not arriving at the external destination\n- Metrics are delayed compared with the console\n- Forwarded volume is higher than expected\n\n## Common causes\n\n- The destination rejected the payload and forwarding paused\n- Aggregation introduces a delay before metrics are forwarded\n- Debug-level logs are being forwarded along with the rest\n\n## Resolution\n\n1. [DOC-INT-002] ## Notes\n\nForwarding pauses after one hour of consecutive failures and must be resumed manually once the destination is healthy. [DOC-INT-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-INT-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.24,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0063",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'account_access' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-002.",
+  "rule": "confident_and_supported",
+  "intent": "account_access",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Changing plans, and how proration is calculated\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The charge after an upgrade differs from the advertised price\n- A downgrade did not take effect immediately\n- A credit is expected but not visible\n\n## Common causes\n\n- The upgrade was prorated across the remainder of the billing period\n- Downgrades are applied at the end of the current period rather than immediately\n- The credit was applied to the next invoice rather than refunded\n\n## Resolution\n\n1. [DOC-BILL-002] Downgrades take effect at the start of the next period so that paid-for capacity is not lost. [DOC-BILL-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0064",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'api_usage_question' with 100% confidence and supported by 1 documentation passage(s): DOC-API-002.",
+  "rule": "confident_and_supported",
+  "intent": "api_usage_question",
+  "urgency": "low",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-API-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Pagination and handling large result sets\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Only the first page of results is returned\n- Iterating through results misses or duplicates records\n- Large queries time out\n\n## Common causes\n\n- The cursor from the previous response was not passed to the next request\n- Offset pagination was used against a changing collection\n- The page size requested exceeds the maximum\n\n## Resolution\n\n1. [DOC-API-002] For very large extracts, use the export endpoint, which runs asynchronously and returns a download link. [DOC-API-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-API-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.25,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0065",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Check the billing period dates at the top of the invoice. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.24,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0066",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 1 documentation passage(s): DOC-DATA-003.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] ## Notes\n\nMetadata such as account names and billing records is stored centrally regardless of the data region. [DOC-DATA-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0067",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "'security_incident' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "security_incident",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-SEC-001",
+   "DOC-SEC-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Responding to a suspected account compromise\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Unrecognised activity appears in the audit log\n- A user reports credentials may have been exposed\n- Resources were created that nobody claims\n\n## Common causes\n\n- Credentials were reused from a service that suffered a breach\n- An API key was committed to a public repository\n- A former team member retained access after leaving\n\n## Resolution\n\n1. [DOC-SEC-001] Review the audit log for the period in question, filtering by the affected user, and record anything unexpected before it ages out. [DOC-SEC-001] # Audit logging and compliance evidence\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- An auditor has requested access records\n- An event that should be logged cannot be found\n- Log retention is shorter than a policy requires\n\n## Common causes\n\n- The event predates the retention window\n- The event type is not covered by the audit log\n- The organisation is on a plan with shorter retention\n\n## Resolution\n\n1. [DOC-SEC-003] Note that read access to resources is not logged on Business plans, only administrative and configuration changes. [DOC-SEC-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-SEC-001",
+   "DOC-SEC-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.19,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0068",
+  "channel": "email",
+  "action": "escalated",
+  "reason": "'security_incident' is always handled by a person: this class of request commits CloudServe to something the system cannot promise.",
+  "rule": "policy_intent",
+  "intent": "security_incident",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-SEC-001",
+   "DOC-SEC-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Responding to a suspected account compromise\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Unrecognised activity appears in the audit log\n- A user reports credentials may have been exposed\n- Resources were created that nobody claims\n\n## Common causes\n\n- Credentials were reused from a service that suffered a breach\n- An API key was committed to a public repository\n- A former team member retained access after leaving\n\n## Resolution\n\n1. [DOC-SEC-001] Review the audit log for the period in question, filtering by the affected user, and record anything unexpected before it ages out. [DOC-SEC-001] # Audit logging and compliance evidence\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- An auditor has requested access records\n- An event that should be logged cannot be found\n- Log retention is shorter than a policy requires\n\n## Common causes\n\n- The event predates the retention window\n- The event type is not covered by the audit log\n- The organisation is on a plan with shorter retention\n\n## Resolution\n\n1. [DOC-SEC-003] Note that read access to resources is not logged on Business plans, only administrative and configuration changes. [DOC-SEC-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-SEC-001",
+   "DOC-SEC-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.17,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0069",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'configuration_help' with 100% confidence and supported by 2 documentation passage(s): DOC-DEPLOY-004, DOC-ACCT-002.",
+  "rule": "confident_and_supported",
+  "intent": "configuration_help",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-004",
+   "DOC-ACCT-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Configuring environment variables and secrets\n\n**Applies to:** All compute services\n\n## Symptoms\n\n- The application cannot read a variable that appears to be set\n- A secret value appears in plain text in the logs\n- Configuration differs between environments unexpectedly\n\n## Common causes\n\n- The variable was set at project scope but read at service scope\n- The application logs its configuration at startup\n- An environment override exists that is not visible on the main settings page\n\n## Resolution\n\n1. [DOC-DEPLOY-004] Review the environment overrides page, which lists values that differ from the defaults for each environment. [DOC-DEPLOY-004] Use a separate project per environment where isolation of configuration and billing matters. [DOC-ACCT-002] # Organisation setup and project structure\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Resources are difficult to separate for billing\n- Environments are sharing configuration unintentionally\n- A project needs moving between organisations\n\n## Common causes\n\n- Environments were created as folders within one project rather than as separate projects\n- Configuration was set at organisation scope and inherited everywhere\n- Projects cannot move between organisations without a migration\n\n## Resolution\n\n1. [DOC-ACCT-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-004",
+   "DOC-ACCT-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.4,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0070",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'sso_configuration' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-003.",
+  "rule": "confident_and_supported",
+  "intent": "sso_configuration",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Single sign-on configuration with SAML providers\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- Users are redirected to the identity provider and returned to an error page\n- SSO works for some users and not others\n- New users are not provisioned automatically\n\n## Common causes\n\n- The assertion consumer service URL does not match the value registered with CloudServe\n- The email attribute in the assertion does not match the CloudServe account email\n- Just-in-time provisioning is disabled on the connection\n\n## Resolution\n\n1. [DOC-AUTH-003] Compare the assertion consumer service URL in your identity provider against the value shown on the SSO settings page. [DOC-AUTH-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.28,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0071",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'quota_or_overage' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-003.",
+  "rule": "confident_and_supported",
+  "intent": "quota_or_overage",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Usage limits, overage and spend controls\n\n**Applies to:** All plans\n\n## Symptoms\n\n- Service was throttled after a traffic increase\n- Overage charges appeared unexpectedly\n- A spend cap stopped a production workload\n\n## Common causes\n\n- Plan allowance was consumed before the end of the period\n- A spend cap was configured and reached\n- Overage protection is disabled, so usage continued beyond the allowance\n\n## Resolution\n\n1. [DOC-BILL-003] Configure alerts at fifty, eighty and ninety-five per cent of allowance rather than relying on the cap as a warning. [DOC-BILL-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.26,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0072",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 2 documentation passage(s): DOC-BILL-001, DOC-BILL-002.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Open the usage breakdown for the period, which itemises charges by service and by environment. [DOC-BILL-001] # Changing plans, and how proration is calculated\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The charge after an upgrade differs from the advertised price\n- A downgrade did not take effect immediately\n- A credit is expected but not visible\n\n## Common causes\n\n- The upgrade was prorated across the remainder of the billing period\n- Downgrades are applied at the end of the current period rather than immediately\n- The credit was applied to the next invoice rather than refunded\n\n## Resolution\n\n1. [DOC-BILL-002] Credits from a downgrade or an adjustment are applied against the next invoice by default rather than refunded to the payment method. [DOC-BILL-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.42,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0073",
+  "channel": "forum",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 2 documentation passage(s): DOC-BILL-001, DOC-BILL-002.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Set a usage alert on the billing page so that unexpected accrual is noticed during the period rather than at the end of it. [DOC-BILL-001] # Changing plans, and how proration is calculated\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The charge after an upgrade differs from the advertised price\n- A downgrade did not take effect immediately\n- A credit is expected but not visible\n\n## Common causes\n\n- The upgrade was prorated across the remainder of the billing period\n- Downgrades are applied at the end of the current period rather than immediately\n- The credit was applied to the next invoice rather than refunded\n\n## Resolution\n\n1. [DOC-BILL-002] Where a refund rather than a credit is required, an account owner should raise the request within thirty days of the invoice. [DOC-BILL-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001",
+   "DOC-BILL-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.4,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0074",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'account_access' with 100% confidence and supported by 1 documentation passage(s): DOC-ACCT-001.",
+  "rule": "confident_and_supported",
+  "intent": "account_access",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-ACCT-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Managing team members, roles and permissions\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A user cannot access a project they should be able to\n- A departing user needs removing\n- Permissions need narrowing after a review\n\n## Common causes\n\n- The role was granted at project scope rather than organisation scope\n- The invitation was never accepted and the account does not exist\n- A group membership grants broader access than the direct role suggests\n\n## Resolution\n\n1. [DOC-ACCT-001] Check the effective permissions view for the user, which resolves direct roles and group memberships together. [DOC-ACCT-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-ACCT-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.24,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0075",
+  "channel": "docs_comment",
+  "action": "answered",
+  "reason": "Read as 'api_key_issue' with 100% confidence and supported by 1 documentation passage(s): DOC-AUTH-004.",
+  "rule": "confident_and_supported",
+  "intent": "api_key_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-AUTH-004"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# API key rotation and scope management\n\n**Applies to:** All plans\n\n## Symptoms\n\n- A previously working key returns 401 Unauthorized\n- A key works for some endpoints and not others\n- A key needs replacing after accidental exposure\n\n## Common causes\n\n- The key was revoked or reached its configured expiry\n- The key was issued with a scope that excludes the endpoint being called\n- The key belongs to a deleted user and was removed with the account\n\n## Resolution\n\n1. [DOC-AUTH-004] Check the API keys page for the key's status and expiry. [DOC-AUTH-004]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-AUTH-004"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.26,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0076",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 2 documentation passage(s): DOC-DATA-003, DOC-DATA-002.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003",
+   "DOC-DATA-002"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] ## Notes\n\nMetadata such as account names and billing records is stored centrally regardless of the data region. [DOC-DATA-003] # Backups, retention and point-in-time restore\n\n**Applies to:** Managed Database\n\n## Symptoms\n\n- Data was deleted and needs recovering\n- A restore is taking longer than expected\n- A backup is older than expected\n\n## Common causes\n\n- Automated backups run daily and retention depends on the plan\n- Restore time scales with database size\n- Point-in-time recovery is available only where continuous archiving is enabled\n\n## Resolution\n\n1. [DOC-DATA-002] Allow roughly ten minutes per hundred gigabytes for the restore, and considerably longer where the instance is also under load. [DOC-DATA-002]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003",
+   "DOC-DATA-002"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.48,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0077",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'billing_query' with 100% confidence and supported by 1 documentation passage(s): DOC-BILL-001.",
+  "rule": "confident_and_supported",
+  "intent": "billing_query",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-BILL-001"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Understanding your invoice and usage breakdown\n\n**Applies to:** All plans\n\n## Symptoms\n\n- The invoice is higher than expected\n- Charges appear for a service that is not in use\n- The billing period does not align with the calendar month\n\n## Common causes\n\n- Usage-based charges accrued beyond the plan allowance\n- A resource was left running in a non-production environment\n- The billing period runs from the subscription date rather than the first of the month\n\n## Resolution\n\n1. [DOC-BILL-001] Set a usage alert on the billing page so that unexpected accrual is noticed during the period rather than at the end of it. [DOC-BILL-001]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-BILL-001"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0078",
+  "channel": "docs_comment",
+  "action": "escalated",
+  "reason": "No documentation passage was relevant enough to support an answer, so replying would mean guessing.",
+  "rule": "no_supporting_documentation",
+  "intent": "database_issue",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [],
+  "response": null,
+  "citations": [],
+  "guardrail_findings": [],
+  "latency_ms": 0.07,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0079",
+  "channel": "email",
+  "action": "answered",
+  "reason": "Read as 'data_residency' with 100% confidence and supported by 1 documentation passage(s): DOC-DATA-003.",
+  "rule": "confident_and_supported",
+  "intent": "data_residency",
+  "urgency": "medium",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DATA-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Data residency and regional storage\n\n**Applies to:** Business and Enterprise plans\n\n## Symptoms\n\n- A customer requires data to remain in a specific region\n- Latency is high for users far from the primary region\n- A compliance review has asked where data is held\n\n## Common causes\n\n- The organisation was created in a region that no longer suits the requirement\n- Read traffic is being served from the primary region only\n- Backups are replicated to a second region by default\n\n## Resolution\n\n1. [DOC-DATA-003] ## Notes\n\nMetadata such as account names and billing records is stored centrally regardless of the data region. [DOC-DATA-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DATA-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.29,
+  "degraded": false,
+  "error": null
+ },
+ {
+  "ticket_id": "VAL-0080",
+  "channel": "chat",
+  "action": "answered",
+  "reason": "Read as 'deployment_failure' with 100% confidence and supported by 1 documentation passage(s): DOC-DEPLOY-003.",
+  "rule": "confident_and_supported",
+  "intent": "deployment_failure",
+  "urgency": "high",
+  "confidence": 0.998,
+  "sources": [
+   "DOC-DEPLOY-003"
+  ],
+  "response": "Thanks for getting in touch. Based on our documentation:\n\n# Build failures caused by dependency resolution\n\n**Applies to:** Build Service\n\n## Symptoms\n\n- Builds that previously succeeded now fail without code changes\n- The build works locally but fails in the pipeline\n- Dependency resolution takes far longer than usual\n\n## Common causes\n\n- An unpinned dependency released a new incompatible version\n- The build environment uses a different language runtime than the local machine\n- The dependency cache holds a partially written artefact\n\n## Resolution\n\n1. [DOC-DEPLOY-003] ## Notes\n\nBuild logs retain the full resolution output for thirty days, which is usually enough to identify which version changed. [DOC-DEPLOY-003]\n\nIf that does not resolve it, reply here and a support engineer will pick it up.",
+  "citations": [
+   "DOC-DEPLOY-003"
+  ],
+  "guardrail_findings": [],
+  "latency_ms": 0.27,
+  "degraded": false,
+  "error": null
+ }
+]
