@@ -1,0 +1,2 @@
+date,stage,task,hours,produced,blocked_by,sprint_item,ai_tools,ai_notes
+2026-09-04,Discovery,"Read and analysed the capstone pack: project instructions, contents, project brief, build specification",2.0,"Pack analysis: recomputed baselines from ticket history, found escalation-target conflict and validation-set contradiction",,,"Claude Code","Extracted docx text and recomputed dataset baselines; verified the pack's stated figures against the JSON rather than trusting them"
