@@ -1,0 +1,142 @@
+# Continuous integration (B-13).
+#
+# The gate this pipeline defends is A12: the system runs from a clean checkout
+# with nothing installed. The required job installs nothing -- no pip step, no
+# cache, no requirements.txt -- and additionally blocks the optional packages at
+# import (scripts/ci/no_extras), so it tests that the spine does not need them
+# rather than that GitHub's runner image happens not to ship them. If someone
+# adds a third-party import to the spine, this job is what fails.
+#
+# The extras are covered by a second job that is allowed to fail without
+# blocking a merge, because a Chroma or model-download problem on GitHub's
+# runners is not a defect in this repository.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spine:
+    name: "Standard library only, extras blocked at import (A12)"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.10 is the floor the README claims; 3.13 catches deprecations early.
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Environment
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip list --format=freeze
+
+      # Every step below runs with the optional dependencies blocked at import,
+      # so this job tests that the spine does not need them rather than that
+      # the runner image happens not to ship them. See the module docstring.
+      - name: Acceptance tests
+        run: PYTHONPATH=scripts/ci/no_extras python -m unittest discover -s tests -v
+
+      - name: Unattended run over the validation set (A9, A10)
+        run: |
+          PYTHONPATH=scripts/ci/no_extras python -m evaluation.harness \
+            --input Capstone_Pack/05_Datasets/validation_tickets.json \
+            --output artifacts/validation
+
+      - name: The decision log must reconcile
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          report = json.loads(pathlib.Path("artifacts/validation/metrics.json").read_text())
+          gov, vol = report["governance"], report["volume"]
+          print(json.dumps({"volume": vol, "governance": gov}, indent=1))
+          if not gov["log_reconciles"]:
+              sys.exit(f"decision log does not reconcile: "
+                       f"{gov['decisions_logged']} logged vs {gov['tickets_processed']} tickets")
+          if vol["pipeline_errors"]:
+              sys.exit(f"{vol['pipeline_errors']} tickets raised an unhandled error")
+          if vol["tickets_processed"] != vol["answered_automatically"] + vol["escalated"] + vol["blocked_by_guardrails"]:
+              sys.exit("a ticket was neither answered, escalated nor blocked")
+          PY
+
+      - name: Every induced failure mode degrades rather than crashes (A11)
+        run: |
+          for mode in outage timeout ratelimit malformed; do
+            echo "--- FAULT_MODE=$mode"
+            FAULT_MODE=$mode PYTHONPATH=scripts/ci/no_extras python -m evaluation.harness \
+              --input Capstone_Pack/05_Datasets/validation_tickets.json \
+              --output "artifacts/fault-$mode" --use-provider --limit 15 --log-level ERROR
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: run-${{ matrix.python-version }}
+          path: artifacts/
+          retention-days: 14
+
+  extras:
+    name: "With the optional extras (hybrid retrieval, Prometheus)"
+    runs-on: ubuntu-latest
+    continue-on-error: true      # informational: a CDN or model download is not our defect
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Acceptance tests, extras present
+        run: python -m unittest discover -s tests
+
+      - name: Hybrid retrieval must actually have its semantic half
+        run: |
+          python - <<'PY'
+          import sys
+          from src.retrieve import build_retriever
+          r = build_retriever("Capstone_Pack/05_Datasets/documentation.json",
+                              backend="hybrid", gate=0.60)
+          if not getattr(r, "semantic_available", False):
+              sys.exit("hybrid degraded to lexical with the extras installed (R-07 reopens)")
+          print("hybrid retrieval intact:", r.name)
+          PY
+
+      - name: The Prometheus exporter serves what the dashboard plots
+        run: |
+          python - <<'PY'
+          import sys, urllib.request
+          from src.models import Outcome
+          from src.monitoring import METRICS, PROMETHEUS_AVAILABLE
+          if not PROMETHEUS_AVAILABLE:
+              sys.exit("prometheus_client not importable despite requirements.txt")
+          if not METRICS.start_server(8901):
+              sys.exit("exporter did not start")
+          METRICS.observe_outcome(Outcome(ticket_id="T", channel="email", action="answered",
+                                          reason="r", rule="confident_and_supported",
+                                          latency_ms=5.0))
+          body = urllib.request.urlopen("http://localhost:8901/metrics").read().decode()
+          for metric in ("tickets_processed_total", "response_seconds_bucket",
+                         "retrieval_semantic_available"):
+              if metric not in body:
+                  sys.exit(f"{metric} missing from /metrics")
+          print("exporter serves every metric the dashboard queries")
+          PY
