@@ -155,14 +155,138 @@ is gated on the semantic score alone. Rejected along the way: semantic-only
 (passed every fairness dimension at 97.5% hit rate but could not abstain at
 all, because a ranking always exists).
 
-`lexical` stays the code default so a clean checkout runs with nothing
-installed and the gate cannot fail on a dependency. **`hybrid` is the
-recommended and audited configuration** — set `RETRIEVAL_BACKEND=hybrid` or
-pass `--backend hybrid`. Degrading to lexical logs a warning, because it
-reopens R-07.
+**`hybrid` is the recommended and audited configuration.** It was originally
+left as an opt-in with `lexical` as the code default; D11 reverses that.
+Degrading to lexical logs a warning, because it reopens R-07.
 
 Cost: 6.2ms per ticket against 0.1ms, and correct abstention fell from 29.4%
 to 12.6% on development. See the honest note in `docs/fairness_audit.md`.
+
+## D11 — Hybrid is the default, not the opt-in
+
+D10 left `lexical` as the code default on the reasoning that a clean checkout
+must never fail on a missing dependency. That reasoning was sound and the
+conclusion was still wrong, because `.env.example` shipped
+`RETRIEVAL_BACKEND=hybrid` while `src/config.py` defaulted to `"lexical"`. A
+run with no `.env` — which is how a grader runs it — silently picked the one
+configuration the fairness audit fails, and said nothing about it.
+
+The dependency argument does not actually require a lexical default.
+`HybridRetriever` already degrades to lexical when the extras are absent and
+logs that it did, so defaulting to `hybrid` costs nothing on a clean checkout:
+the gate still cannot fail on a dependency. What changes is which way the
+silent case falls. It now falls towards the audited configuration, and the
+unaudited one has to be asked for by name (`--backend lexical` or
+`RETRIEVAL_BACKEND=lexical`).
+
+The general form of the mistake is worth naming, because the same defect had
+already appeared once with the retrieval floor documented as 0.60 in the README
+after D9 moved it to 0.42: a default that lives in three places drifts. The
+values now agree across `src/config.py`, `.env.example` and the README, and
+D12's semantic gauge makes a lexical-only run visible at runtime rather than
+only in a config file nobody rereads.
+
+## D12 — Monitoring: an in-process tally that Prometheus mirrors (B-12)
+
+The Setup Guide's monitoring section assumes `prometheus_client` is installed.
+The spine's whole premise is that it is not, so instrumentation that only works
+with the extras present would be untested on the machine that grades it.
+
+So `src/monitoring.py` records every metric into an in-process tally that
+always works, and mirrors into Prometheus only when the library is importable.
+The tally is not a fallback nobody exercises: the acceptance tests assert on it
+directly, so the instrumentation is covered on a clean checkout, and the
+harness folds a snapshot of it into `metrics.json` so a run stays auditable
+after the exporter is gone.
+
+The two are deliberately not the same reading. A Prometheus counter is
+process-lifetime and monotonic by design; `metrics.json` describes one run. The
+harness clears the tally at the top of a run and never touches the collectors,
+which is why `Metrics.reset_tally` exists and why it does only half of what its
+name suggests.
+
+Beyond the Setup Guide's three metrics (tickets by channel and outcome,
+latency, guardrail blocks), three were added that this system specifically
+needs: retrieval abstentions, degraded generations, and
+`retrieval_semantic_available`. The last is the one worth having. When hybrid
+retrieval loses its semantic half, nothing user-visible breaks — the system
+keeps answering, at the lexical hit rate, with the fairness gaps the audit
+failed on. There is no error to see, which is exactly why it needs a gauge and
+an alert rather than a log line. It is the first panel on the dashboard and the
+only `critical` rule in `monitoring/alerts.yml`.
+
+Two things the exporter deliberately will not do: bind a port unless asked
+(`--metrics-port`, default off, so an unattended grading run does not open one
+it was not asked for), and raise. A monitoring endpoint that cannot bind logs a
+warning and the run continues — A11 applies to the instruments too.
+
+Known gap: a batch run over 500 tickets finishes in under a second, well inside
+a 15s scrape interval, so a live dashboard needs `--metrics-hold-seconds` to
+keep the endpoint up long enough to be scraped at all. That is a batch-shaped
+answer to a service-shaped tool. The honest fix is the FastAPI service, where
+the process outlives the request and the scrape model fits.
+
+## D13 — The confidence threshold is not a control, and the sweep is what proved it
+
+Every prior entry treated the 0.80 threshold as the last untuned dial and named
+it the lever for R-08. Swept against the 500 development tickets, it turns out
+not to be a dial at all.
+
+| Threshold | Automation | Route agreement | Over-answered | Max gap |
+|---|---|---|---|---|
+| 0.500 → 0.998 | 81.00% | 78.80% | 20.00% | 7.99pp |
+| 0.999 | 0.00% | 37.80% | 0.00% | 14.43pp |
+
+Not a trend with a knee in it: one flat line and a cliff. Every value from 0.50
+to 0.998 produces byte-identical routing, and the first value above 0.998
+escalates all 500 tickets. There is nothing in between to select on.
+
+The cause is in the confidence itself. Across 500 tickets the classifier emits
+**two** distinct values: 0.998 (499 tickets) and 0.8 (one). Two mechanisms
+compound:
+
+1. **Naive Bayes posteriors saturate.** Summing log-likelihoods over every
+   in-vocabulary token treats each token as independent evidence, so the top
+   class wins by an enormous margin and the posterior pins to ~1.0 almost
+   regardless of how ambiguous the ticket actually is.
+2. **Binned calibration then quantises what is left.** D4's calibration maps a
+   raw posterior to the measured accuracy of its band and returns that
+   accuracy. With 495 of 500 raw scores landing in the `[0.99, 1.01)` band, 495
+   tickets receive that band's accuracy — the same number, 0.998 — as their
+   confidence.
+
+So the calibration is honest at the population level and useless at the ticket
+level: 0.998 really is how often that band is right, and it says nothing about
+*this* ticket. D4's claim that confidence never states certainty still holds.
+What does not hold is the unstated assumption that it varies.
+
+**Consequences, stated plainly because they change what the report can claim.**
+
+- The threshold stays at 0.80. Not because 0.80 was validated, but because
+  every value in the usable range produces the same routing, and 0.80 is the
+  one the Brief named and the one both audits already ran under. It should be
+  described in the report as inert, not as tuned.
+- **R-08's stated lever does not exist.** The regional and tier gaps in routing
+  agreement cannot be closed by the threshold, because the threshold cannot
+  change a single routing decision. That claim in the previous Open items was
+  wrong and is corrected below.
+- **20% over-answering is the finding that replaces it.** One ticket in five is
+  answered where the expert escalated, against 1.2% under-answered. The error
+  is overwhelmingly in the dangerous direction, and the policy gate (D5) and
+  the retrieval floor (D9) are the only controls currently able to move it.
+
+**What would actually fix it**, none of which is a threshold change: fit the
+calibration as a continuous mapping rather than four bins (isotonic or Platt),
+damp the posterior saturation (token-count normalisation, or a temperature on
+the log-sum), or drop confidence as a routing input altogether and route on
+retrieval support and policy alone — which is close to what the system already
+does in practice.
+
+Not attempted before submission. The sweep is cheap and repeatable
+(`scripts/sweep_threshold.py`, results in `evaluation/threshold/`), but
+recalibrating changes every headline number in the report and in the fairness
+audit, and there is not enough time left to re-audit honestly. Recorded as a
+known defect with a diagnosis rather than patched in a hurry.
 
 ## Open items
 
@@ -172,21 +296,31 @@ to 12.6% on development. See the honest note in `docs/fairness_audit.md`.
 - **R-08 open.** Routing agreement now varies by region (7.99pp) and tier
   (5.80pp), and citation coverage by region (8.45pp). Different cause: better
   retrieval removed an escalation path, so automation rose 69% to 81% and
-  over-answering rose with it. The lever is the confidence threshold.
-- **Confidence threshold is the top priority.** Still the Brief's illustrative
-  0.80, still doing almost nothing because calibrated confidence is 0.988 for
-  nearly everything. It is now the only untuned control, and both R-08 gaps
-  plus the fallen abstention rate point at it.
+  over-answering rose with it. The lever is *not* the confidence threshold
+  (D13): swept across its whole usable range it changes no routing decision at
+  all. On the development set over-answering sits at 20.0% against 1.2%
+  under-answering, and only the policy gate and the retrieval floor can move
+  it.
+- ~~**Confidence threshold is the top priority.**~~ **Closed by D13, as
+  disproved.** It was never the lever. Swept across its whole usable range it
+  changes no routing decision at all, because calibrated confidence takes two
+  distinct values across 500 tickets. The 20% over-answer rate is the finding
+  that replaces it.
 - The earlier 28pp tier gap was small-sample noise (n=8 on validation). On 500
   tickets the tier residual is 4.44pp and passes. The regional gap is largely
   inherited: the experts' own labels vary by 14.43pp across regions against our
   12.77pp.
-- Confidence threshold is still the illustrative 0.80 from the Brief. It has
-  not been swept. With calibrated confidence at 0.988 for almost everything,
-  the threshold currently does very little work; the policy gate (D5) is doing
-  the real routing.
+- Confidence threshold is the illustrative 0.80 from the Brief. It has now
+  been swept (D13) and is inert across its usable range; the policy gate (D5)
+  and the retrieval floor (D9) do all of the real routing. The report should
+  describe it as inert rather than as tuned.
 - Groundedness checking is lexical overlap. It catches drift from the sources
   but not a fluent paraphrase that reverses a meaning. Say so in the report
   rather than implying the guardrail is stronger than it is.
 - No FastAPI interface yet. The pipeline is importable and the harness is the
-  batch entry point; the API is a thin layer over `Pipeline.process`.
+  batch entry point; the API is a thin layer over `Pipeline.process`. It is
+  also what would make monitoring (D12) fit its tool properly, rather than
+  needing `--metrics-hold-seconds` to survive a scrape interval.
+- No CI pipeline yet (B-13). The suite runs on the standard library alone, so
+  the GitHub Actions workflow is a checkout, a `python -m unittest`, and a
+  harness run over the validation set.

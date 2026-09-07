@@ -45,9 +45,10 @@ tickets processed, `2` the input file was missing or empty.
 | `--input` | required | ticket file to process |
 | `--output` | required | directory for results and metrics |
 | `--corpus` | `Capstone_Pack/05_Datasets/documentation.json` | documentation corpus |
-| `--threshold` | `0.80` | confidence below which a ticket escalates |
+| `--threshold` | `0.80` | confidence below which a ticket escalates (inert — see D13) |
 | `--retrieval-floor` | `0.42` | relevance below which retrieval returns nothing |
-| `--backend` | `lexical` | `lexical` (BM25, no deps) or `chroma` |
+| `--backend` | `hybrid` | `hybrid` (BM25 + MiniLM, audited), `lexical` (BM25, no deps) or `chroma` |
+| `--semantic-gate` | `0.60` | hybrid only: semantic score below which retrieval abstains |
 | `--use-provider` | off | call the model provider; without it, generation is extractive |
 | `--limit` | all | process only the first N tickets |
 | `--db` | `storage/decisions.db` | decision log |
@@ -89,10 +90,14 @@ failures.
 
 ## Retrieval backends
 
-`lexical` is the default because it needs nothing installed, so the gate can
-never fail on a dependency. **`hybrid` is the recommended configuration**: it
-is the one the fairness condition holds under, and it is what the audit in
-`docs/fairness_audit.md` signs off.
+**`hybrid` is the default**, because it is the configuration the fairness
+condition holds under and a run with no `.env` must not silently pick the one
+the audit fails. Defaulting to it costs nothing: with the extras missing it
+degrades to lexical and says so in the log, so the gate can still never fail on
+a dependency. `docs/fairness_audit.md` signs off the hybrid numbers.
+
+Force the zero-dependency path with `--backend lexical` or
+`RETRIEVAL_BACKEND=lexical`.
 
 ```bash
 pip install -r requirements.txt
@@ -102,12 +107,65 @@ python3 -m evaluation.harness --input <file> --output <dir> --backend hybrid
 | Backend | Retrieval hit rate | Fluency gap | Regional gap | Needs |
 |---|---|---|---|---|
 | `lexical` | 79.8% | 8.3pp FAIL | 15.0pp FAIL | nothing |
-| **`hybrid`** | **96.4%** | **4.3pp ok** | **4.9pp ok** | extras |
+| **`hybrid`** (default) | **96.4%** | **4.3pp ok** | **4.9pp ok** | extras |
 
 Measured on the 500 development tickets. `hybrid` ranks by reciprocal rank
 fusion over BM25 and `all-MiniLM-L6-v2`, and gates abstention on the semantic
 score alone. If the extras are missing it degrades to lexical and logs a
 warning, because degrading reopens the fairness gap.
+
+## The confidence threshold is inert
+
+```bash
+python3 scripts/sweep_threshold.py --backend hybrid
+```
+
+Swept across 0.50 to 0.999 on the 500 development tickets, the threshold does
+not change a single routing decision until 0.999, at which point every ticket
+escalates. The classifier emits two distinct confidence values across the whole
+set — 0.998 for 499 tickets and 0.8 for one — because Naive Bayes posteriors
+saturate and D4's four-band calibration then quantises them to a band accuracy.
+
+It is left at 0.80 and described as inert rather than tuned. The real finding
+the sweep surfaced is that 20.0% of tickets are answered where the expert
+escalated, against 1.2% the other way. Full reasoning and the fixes that would
+actually work are in `docs/decisions.md` D13.
+
+## Monitoring
+
+```bash
+python3 -m evaluation.harness --input <file> --output <dir> \
+    --metrics-port 8001 --metrics-hold-seconds 60
+prometheus --config.file=monitoring/prometheus.yml
+```
+
+Then import `monitoring/grafana_dashboard.json` into Grafana against that
+Prometheus datasource.
+
+`prometheus_client` is optional in the same way Chroma is. `src/monitoring.py`
+records into an in-process tally that always works and mirrors into Prometheus
+only when the library is installed; either way the numbers land in the run's
+`metrics.json` under `monitoring`. Without `--metrics-port` no port is opened,
+so an unattended grading run behaves exactly as before.
+
+| Metric | Type | What it answers |
+|---|---|---|
+| `tickets_processed_total{channel,outcome}` | counter | volume, and how much reaches a person |
+| `response_seconds` | histogram | end to end, ingest to validated draft |
+| `guardrail_blocks_total{guardrail}` | counter | which guardrail is doing the work |
+| `escalations_total{rule}` | counter | why tickets reach a person |
+| `retrieval_abstentions_total` | counter | how often retrieval returns nothing (A4) |
+| `responses_degraded_total` | counter | provider failures that fell back to extractive |
+| `retrieval_semantic_available` | gauge | **1 hybrid, 0 lexical-only** |
+
+That gauge is the alarm worth having. When hybrid retrieval loses its semantic
+half nothing user-visible breaks — the system keeps answering, at the lexical
+hit rate, with the fairness gaps the audit failed on (R-07). It is the first
+panel on the dashboard and the only `critical` rule in `monitoring/alerts.yml`.
+
+The `--metrics-hold-seconds` flag exists because a run over 500 tickets
+finishes in under a second, inside a 15s scrape interval. Without the hold the
+process exits before Prometheus ever reaches it and the dashboard stays empty.
 
 ## Attribution
 
