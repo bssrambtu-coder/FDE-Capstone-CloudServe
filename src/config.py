@@ -36,11 +36,19 @@ class Config:
     retrieval_top_k: int = _i("RETRIEVAL_TOP_K", 5)
     retrieval_floor: float = _f("RETRIEVAL_FLOOR", 0.42)
 
-    # "hybrid" is the recommended configuration and the one the fairness
-    # condition holds under; "lexical" is the zero-dependency default so a
-    # clean checkout runs with nothing installed.
-    retrieval_backend: str = os.environ.get("RETRIEVAL_BACKEND", "lexical")
+    # "hybrid" is the default because it is the configuration the fairness
+    # condition holds under, and a run with no .env must not silently pick the
+    # configuration the audit fails. It costs nothing to default to: when the
+    # extras are absent HybridRetriever degrades to lexical and logs that it
+    # did, so a clean checkout still clears the gate with nothing installed.
+    # Force the zero-dependency path with RETRIEVAL_BACKEND=lexical.
+    retrieval_backend: str = os.environ.get("RETRIEVAL_BACKEND", "hybrid")
     semantic_gate: float = _f("SEMANTIC_GATE", 0.60)
+
+    # Monitoring (B-12). 0 leaves the exporter off, which is the default
+    # because an unattended grading run should not bind a port it was not
+    # asked for. The in-process tally runs either way.
+    metrics_port: int = _i("METRICS_PORT", 0)
 
     # Resilience (A11).
     provider_timeout_s: float = _f("PROVIDER_TIMEOUT_S", 20.0)

@@ -1,0 +1,52 @@
+# Alerting rules. Three conditions, each tied to something the governance
+# framework already commits to rather than to a number that looked reasonable.
+
+groups:
+  - name: support-system
+    rules:
+      # The one that matters most. When hybrid retrieval loses its semantic
+      # half the system keeps answering, at the lexical hit rate and with the
+      # fairness gaps the audit failed on (R-07). Nothing user-visible breaks,
+      # which is exactly why it needs an alert rather than a log line.
+      - alert: RetrievalRunningLexicalOnly
+        expr: retrieval_semantic_available == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Retrieval has no semantic half; the fairness condition no longer holds"
+          description: >-
+            Hybrid retrieval has degraded to lexical-only, or was configured that
+            way. Fluency and regional gaps return to 8.3pp and 15.0pp, outside
+            the five point governance condition. See docs/fairness_audit.md R-07.
+
+      # Escalation is the safe failure, so a rising escalation rate is a
+      # capacity problem rather than a correctness one -- warning, not page.
+      - alert: EscalationRateHigh
+        expr: >-
+          sum(rate(tickets_processed_total{outcome!="answered"}[30m]))
+          / sum(rate(tickets_processed_total[30m])) > 0.6
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Over 60% of tickets are reaching a person"
+          description: >-
+            Sustained over half an hour. Usually means retrieval coverage has
+            dropped or a new ticket population has appeared that the
+            documentation does not answer.
+
+      # Guardrails blocking is the system working. Guardrails blocking a lot,
+      # suddenly, means generation has drifted and the drafts are unsafe.
+      - alert: GuardrailBlockRateSpike
+        expr: >-
+          sum(rate(guardrail_blocks_total[15m]))
+          / sum(rate(tickets_processed_total[15m])) > 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 10% of drafts are being blocked by a guardrail"
+          description: >-
+            Check which guardrail: a PII spike points at the provider echoing
+            ticket content, an ungrounded-claim spike at prompt or model drift.

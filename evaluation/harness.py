@@ -24,6 +24,7 @@ from pathlib import Path
 from src.config import CONFIG, Config
 from src.decision_log import DecisionLog
 from src.ingest import load_tickets
+from src.monitoring import METRICS
 from src.pipeline import Pipeline
 from src.providers import get_provider
 
@@ -47,6 +48,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="hybrid is recommended; lexical needs no dependencies")
     p.add_argument("--semantic-gate", type=float, default=CONFIG.semantic_gate)
     p.add_argument("--db", default=CONFIG.sqlite_path, help="decision log database")
+    p.add_argument("--metrics-port", type=int, default=CONFIG.metrics_port,
+                   help="expose Prometheus metrics on this port; 0 leaves it off")
+    p.add_argument("--metrics-hold-seconds", type=float, default=0.0,
+                   help="keep the metrics endpoint open this long after the run, "
+                        "so a scrape interval can land on a short batch")
     p.add_argument("--use-provider", action="store_true",
                    help="call the model provider; without it generation is extractive")
     p.add_argument("--limit", type=int, default=None, help="process only the first N tickets")
@@ -86,11 +92,21 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     log.info("%d tickets loaded", len(tickets))
 
+    # metrics.json reports this run; the exporter reports the process. See
+    # Metrics.reset_tally for why only one of the two is cleared.
+    METRICS.reset_tally()
+
     provider = get_provider() if args.use_provider else None
     pipeline = Pipeline(config=config, provider=provider)
     log.info("retriever=%s threshold=%.2f floor=%.2f provider=%s",
              getattr(pipeline.retriever, "name", "?"), config.confidence_threshold,
              config.retrieval_floor, "on" if provider else "off (extractive)")
+
+    # After the pipeline, not before: building it is what sets the semantic
+    # gauge, and a scrape landing in the gap would read 0 and trip the R-07
+    # alert on a system that is perfectly healthy.
+    if args.metrics_port:
+        METRICS.start_server(args.metrics_port)
 
     decision_log = DecisionLog(args.db)
     run_id = decision_log.start_run(
@@ -129,6 +145,9 @@ def main(argv: list[str] | None = None) -> int:
     report = metrics_mod.compute(
         outcomes, tickets, logged_decisions=logged, provider_stats=provider_stats
     )
+    # The same numbers the dashboard shows, frozen into the report, so the run
+    # is auditable after the exporter has gone away.
+    report["monitoring"] = METRICS.snapshot()
     report["run"] = {
         "run_id": run_id,
         "input": str(in_path),
@@ -155,6 +174,11 @@ def main(argv: list[str] | None = None) -> int:
              v["blocked_by_guardrails"], v["pipeline_errors"])
     log.info("wrote %s", ", ".join(
         str(out_dir / f) for f in ("results.json", "metrics.json", "metrics.md")))
+
+    if args.metrics_port and args.metrics_hold_seconds > 0:
+        log.info("holding the metrics endpoint open for %.0fs so Prometheus can scrape",
+                 args.metrics_hold_seconds)
+        time.sleep(args.metrics_hold_seconds)
 
     if logged != len(tickets):
         log.error("decision log does not reconcile: %d logged against %d tickets",

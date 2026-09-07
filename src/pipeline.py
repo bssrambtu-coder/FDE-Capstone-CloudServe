@@ -15,6 +15,7 @@ from .classify import Classifier
 from .config import CONFIG, Config
 from .generate import generate
 from .models import Outcome, Ticket
+from .monitoring import METRICS, Metrics
 from .retrieve import Retriever, build_retriever
 from .route import NO_DOC_INTENTS, route
 from .validate import validate
@@ -30,6 +31,7 @@ class Pipeline:
         classifier: Classifier | None = None,
         retriever: Retriever | None = None,
         provider=None,
+        metrics: Metrics = METRICS,
     ):
         self.config = config
         self.classifier = classifier or Classifier()
@@ -38,14 +40,22 @@ class Pipeline:
             backend=config.retrieval_backend, gate=config.semantic_gate,
         )
         self.provider = provider
+        self.metrics = metrics
+        # 0 means retrieval is running lexical-only, whether that was chosen or
+        # degraded into. Either way R-07 is open, so the panel should say so
+        # rather than distinguish a deliberate lexical run from a broken hybrid
+        # one -- the fairness consequence is identical.
+        self.metrics.set_semantic_available(
+            bool(getattr(self.retriever, "semantic_available", False))
+        )
 
     def process(self, ticket: Ticket) -> Outcome:
         started = time.perf_counter()
         try:
-            return self._process(ticket, started)
+            outcome = self._process(ticket, started)
         except Exception as exc:  # noqa: BLE001 - the containment boundary
             log.exception("ticket %s failed, escalating", ticket.ticket_id)
-            return Outcome(
+            outcome = Outcome(
                 ticket_id=ticket.ticket_id,
                 channel=ticket.channel,
                 action="escalated",
@@ -54,6 +64,10 @@ class Pipeline:
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
                 error=f"{type(exc).__name__}: {exc}",
             )
+        # Recorded on both paths, and outside the try, so a crashed ticket is
+        # as visible on the dashboard as a successful one.
+        self.metrics.observe_outcome(outcome)
+        return outcome
 
     def _process(self, ticket: Ticket, started: float) -> Outcome:
         classification = self.classifier.classify(ticket.text)
@@ -61,6 +75,7 @@ class Pipeline:
         passages = []
         if classification.intent not in NO_DOC_INTENTS:
             passages = self.retriever.search(ticket.text, top_k=self.config.retrieval_top_k)
+            self.metrics.observe_retrieval(passages)
 
         routing = route(
             ticket, classification, passages, threshold=self.config.confidence_threshold

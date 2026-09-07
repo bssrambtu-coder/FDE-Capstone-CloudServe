@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import sqlite3
 import tempfile
 import unittest
@@ -17,7 +18,8 @@ from evaluation import harness
 from src.classify import Classifier
 from src.generate import generate
 from src.ingest import load_tickets, normalise, normalise_channel
-from src.models import CHANNELS, Draft, Passage, Ticket
+from src.models import CHANNELS, Draft, Outcome, Passage, Ticket
+from src.monitoring import Metrics
 from src.pipeline import Pipeline
 from src.providers import (Cache, FaultInjector, ProviderUnavailable,
                            ResilientProvider, StubProvider)
@@ -367,6 +369,116 @@ class A9A10HarnessRun(unittest.TestCase):
                               "--output", str(Path(tmp) / "o"), "--log-level", "CRITICAL"]),
                 2,
             )
+
+
+class B12Monitoring(unittest.TestCase):
+    """Monitoring is instrumentation, so the tests drive the pipeline and read
+    the tally back rather than asserting on the collectors directly.
+
+    Every assertion here uses the in-process tally, which is present whether or
+    not prometheus_client is installed. That is deliberate: the instrumentation
+    has to be covered on a clean checkout, not only where the extras happen to
+    be available.
+    """
+
+    def test_every_finished_ticket_is_counted_by_channel_and_outcome(self):
+        m = Metrics()
+        pipe = Pipeline(metrics=m)
+        for t in list(load_tickets(TICKETS))[:12]:
+            pipe.process(t)
+        total = sum(m.counters["tickets_processed_total"].values())
+        self.assertEqual(total, 12, "a ticket the panel never counts is one nobody investigates")
+
+    def test_a_ticket_that_crashes_is_counted_like_any_other(self):
+        """The containment boundary must not swallow the ticket from the
+        dashboard as well as from the run."""
+
+        class Boom:
+            def classify(self, text):
+                raise RuntimeError("induced")
+
+        m = Metrics()
+        outcome = Pipeline(classifier=Boom(), metrics=m).process(a_ticket())
+        self.assertEqual(outcome.rule, "pipeline_error")
+        self.assertEqual(m.value("tickets_processed_total", "email", "escalated"), 1)
+        self.assertEqual(m.value("escalations_total", "pipeline_error"), 1)
+
+    def test_a_block_is_counted_against_the_guardrail_that_fired(self):
+        m = Metrics()
+        pipe = Pipeline(metrics=m, provider=ScriptedProvider(
+            "Your refund has been processed, contact billing@cloudserve.io. [DOC-AUTH-004]"
+        ))
+        o = pipe.process(a_ticket(ticket_id="ENGINEERED-1",
+                                  body="my api key returns 401 unauthorized when i rotate it"))
+        self.assertEqual(o.action, "blocked")
+        self.assertTrue(o.guardrail_findings)
+        for finding in o.guardrail_findings:
+            self.assertEqual(m.value("guardrail_blocks_total", finding), 1)
+
+    def test_retrieval_abstention_is_counted(self):
+        m = Metrics()
+        m.observe_retrieval([])
+        m.observe_retrieval([Passage("DOC-A", "T", "text", 0.9)])
+        self.assertEqual(m.value("retrieval_abstentions_total"), 1)
+
+    def test_the_semantic_gauge_reports_what_retrieval_actually_has(self):
+        """0 whenever retrieval is lexical-only, chosen or degraded. Both mean
+        the fairness condition no longer holds (R-07)."""
+        m = Metrics()
+        Pipeline(metrics=m, retriever=LexicalRetriever(load_corpus(CORPUS)))
+        self.assertEqual(m.value("retrieval_semantic_available"), 0.0)
+
+        m2 = Metrics()
+
+        class FakeHybrid:
+            name, semantic_available = "hybrid-rrf", True
+
+            def search(self, query, *, top_k=5):
+                return []
+
+        Pipeline(metrics=m2, retriever=FakeHybrid())
+        self.assertEqual(m2.value("retrieval_semantic_available"), 1.0)
+
+    def test_the_exporter_never_takes_the_run_down_with_it(self):
+        """A11 applies to the instruments. A port that cannot bind, or a
+        missing dependency, is a warning and nothing more."""
+        m = Metrics()
+        self.assertIsInstance(m.start_server(1), bool)  # port 1 needs root
+
+    def test_the_snapshot_survives_into_the_metrics_report(self):
+        source = [t.raw for t in list(load_tickets(TICKETS))[:8]]
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "in.json").write_text(json.dumps(source), encoding="utf-8")
+            rc = harness.main(["--input", str(tmp / "in.json"), "--output", str(tmp / "out"),
+                               "--db", str(tmp / "d.db"), "--log-level", "CRITICAL"])
+            self.assertEqual(rc, 0)
+            report = json.loads((tmp / "out" / "metrics.json").read_text())
+        self.assertIn("monitoring", report)
+        counted = sum(report["monitoring"]["counters"]["tickets_processed_total"].values())
+        self.assertEqual(counted, 8)
+        self.assertIn("retrieval_semantic_available", report["monitoring"]["gauges"])
+
+    def test_the_dashboard_only_plots_metrics_the_system_exports(self):
+        """A dashboard panel querying a metric nobody emits is a blank panel
+        during an incident, which is worse than no panel at all."""
+        dashboard = json.loads(Path("monitoring/grafana_dashboard.json").read_text())
+        exported = set(Metrics().counters) | {
+            "tickets_processed_total", "response_seconds", "guardrail_blocks_total",
+            "escalations_total", "retrieval_abstentions_total",
+            "responses_degraded_total", "retrieval_semantic_available",
+        }
+        referenced = set()
+        for panel in dashboard["panels"]:
+            for tgt in panel.get("targets", []):
+                for token in re.findall(r"[a-z_][a-z0-9_]*", tgt["expr"]):
+                    if token.endswith("_bucket"):
+                        token = token[: -len("_bucket")]
+                    if token.endswith("_total") or token in exported:
+                        referenced.add(token)
+        self.assertTrue(referenced, "the dashboard queries nothing")
+        self.assertEqual(referenced - exported, set(),
+                         "dashboard references a metric the system does not export")
 
 
 if __name__ == "__main__":

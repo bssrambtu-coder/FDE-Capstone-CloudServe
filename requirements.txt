@@ -15,6 +15,12 @@ fastapi>=0.110,<1
 uvicorn>=0.29,<1
 python-dotenv>=1,<2
 
+# Monitoring (B-12). Optional in the same way: src/monitoring.py keeps an
+# in-process tally regardless, and only mirrors into Prometheus when this
+# is installed. Without it --metrics-port logs a warning and the run
+# continues.
+prometheus-client>=0.20,<1
+
 # Testing. The suite also runs without these via:
 #     python -m unittest discover -s tests
 pytest>=8,<9

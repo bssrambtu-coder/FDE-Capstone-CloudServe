@@ -1,0 +1,22 @@
+# Prometheus scrape configuration for the CloudServe triage system (B-12).
+#
+#   python3 -m evaluation.harness --input <file> --output <dir> \
+#       --metrics-port 8001 --metrics-hold-seconds 60
+#   prometheus --config.file=monitoring/prometheus.yml
+#
+# The hold matters. A batch run over 500 tickets finishes in well under a
+# second, so without it the process exits before the first scrape and the
+# dashboard stays empty. The hold keeps the endpoint up long enough for at
+# least one scrape interval to land.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: "support-system"
+    static_configs:
+      - targets: ["localhost:8001"]
