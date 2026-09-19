@@ -9,18 +9,19 @@
 # chromadb==0.3.21 is a pydantic v1 release and cannot co-exist with
 # pydantic==2.0.0, so that pin set does not resolve. See docs/decisions.md.
 
-chromadb>=0.5,<2
-sentence-transformers>=3,<6
-fastapi>=0.110,<1
-uvicorn>=0.29,<1
-python-dotenv>=1,<2
+chromadb==1.5.9
+sentence-transformers==5.7.0
+fastapi==0.141.1
+uvicorn==0.53.0
+python-dotenv==1.2.3
 
 # Monitoring (B-12). Optional in the same way: src/monitoring.py keeps an
 # in-process tally regardless, and only mirrors into Prometheus when this
 # is installed. Without it --metrics-port logs a warning and the run
 # continues.
-prometheus-client>=0.20,<1
+prometheus-client==0.26.0
 
 # Testing. The suite also runs without these via:
 #     python -m unittest discover -s tests
-pytest>=8,<9
+pytest==8.4.2
+httpx==0.28.1

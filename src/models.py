@@ -96,6 +96,7 @@ class Outcome:
     latency_ms: float = 0.0
     degraded: bool = False
     error: str | None = None
+    audit_details: dict[str, Any] = field(default_factory=dict)
 
     def to_row(self) -> dict[str, Any]:
         return asdict(self)

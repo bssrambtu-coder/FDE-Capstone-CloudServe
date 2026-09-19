@@ -1,0 +1,5 @@
+{
+  "temperature": 2.0,
+  "fit_source": "grouped development out-of-fold NLL",
+  "report": "evaluation\\final\\calibration.json"
+}

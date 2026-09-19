@@ -50,7 +50,7 @@ def per_class(pairs: list[tuple[str, str]]) -> dict[str, dict[str, Any]]:
         f1 = (
             2 * precision * recall / (precision + recall)
             if precision and recall
-            else None
+            else (0.0 if precision is not None and recall is not None else None)
         )
         out[label] = {
             "support": tp + fn,
@@ -70,6 +70,8 @@ def compute(
 ) -> dict[str, Any]:
     n = len(outcomes)
     by_id = {t.ticket_id: t for t in tickets}
+    # The harness emits one outcome per input, preserving order and duplicate IDs.
+    paired = {id(o): t for o, t in zip(outcomes, tickets)}
     actions = Counter(o.action for o in outcomes)
     answered = actions["answered"]
     escalated = actions["escalated"]
@@ -82,7 +84,7 @@ def compute(
     intent_pairs, urgency_pairs = [], []
     retrieval_expected = retrieval_hit = retrieval_abstain_ok = 0
     for o in outcomes:
-        labels = by_id.get(o.ticket_id, None)
+        labels = paired.get(id(o))
         labels = labels.labels if labels else {}
         if labels.get("intent") and o.intent:
             intent_pairs.append((labels["intent"], o.intent))
@@ -101,8 +103,8 @@ def compute(
     labelled = bool(intent_pairs)
     no_doc_total = sum(
         1 for o in outcomes
-        if "expected_doc_ids" in (by_id.get(o.ticket_id).labels if by_id.get(o.ticket_id) else {})
-        and not (by_id[o.ticket_id].labels.get("expected_doc_ids") or [])
+        if "expected_doc_ids" in (paired[id(o)].labels if id(o) in paired else {})
+        and not (paired[id(o)].labels.get("expected_doc_ids") or [])
     )
 
     guardrail_types = Counter()
@@ -123,11 +125,10 @@ def compute(
             "degraded_responses": sum(1 for o in outcomes if o.degraded),
         },
         "business": {
-            # Resolution without escalation is the closest available proxy for
-            # first contact resolution: whether the customer was in fact
-            # satisfied cannot be observed from a batch run, and the report
-            # should not present this figure as measured CSAT.
-            "first_contact_resolution_pct": _pct(answered, n),
+            # Batch automation is observable; customer resolution is not.
+            "automation_rate_pct": _pct(answered, n),
+            "first_contact_resolution_pct": None,
+            "resolution_note": "Resolution requires customer follow-up; automatic answers are not confirmed resolutions.",
             "escalation_rate_pct": _pct(escalated + blocked, n),
             "mean_response_time_ms": round(st.mean(latencies), 2) if latencies else None,
             "median_response_time_ms": round(st.median(latencies), 2) if latencies else None,
@@ -172,7 +173,9 @@ def compute(
             "tickets_processed": n,
             "log_reconciles": (logged_decisions == n) if logged_decisions is not None else None,
             "guardrail_activations_by_type": dict(guardrail_types) or {},
-            "private_data_detections_in_outbound": private_data_detections,
+            "private_data_detections_in_drafts": private_data_detections,
+            "private_data_detections_in_outbound": sum(1 for o in outcomes if o.action == 'answered'
+                and any(f.startswith('private_data') for f in o.guardrail_findings)),
             "responses_released": answered,
         },
         "provider": provider_stats or {},
@@ -192,7 +195,7 @@ def compute(
     for field in FAIRNESS_FIELDS:
         groups = defaultdict(lambda: [0, 0])
         for o in outcomes:
-            ticket = by_id.get(o.ticket_id)
+            ticket = paired.get(id(o))
             if not ticket:
                 continue
             key = getattr(ticket, field, "unknown")
@@ -209,6 +212,14 @@ def compute(
             "tolerance_pp": FAIRNESS_TOLERANCE_PP,
         }
     metrics["governance"]["fairness"] = fairness
+    judged = [(o, paired[id(o)]) for o in outcomes if id(o) in paired
+              and paired[id(o)].labels.get('expected_route')]
+    metrics['technical']['routing'] = {
+        'labelled_tickets': len(judged),
+        'agreement_pct': _pct(sum((o.action == 'answered') == (t.labels['expected_route'] == 'auto_respond') for o,t in judged), len(judged)),
+        'over_answered': sum(o.action == 'answered' and t.labels['expected_route'] != 'auto_respond' for o,t in judged),
+        'under_answered': sum(o.action != 'answered' and t.labels['expected_route'] == 'auto_respond' for o,t in judged),
+        'must_not_auto_respond_violations': sum(o.action == 'answered' and bool(t.labels.get('must_not_auto_respond')) for o,t in judged)}
     return metrics
 
 
@@ -218,6 +229,7 @@ def to_markdown(metrics: dict[str, Any]) -> str:
     lines += [f"- {k.replace('_', ' ')}: {val}" for k, val in v.items()]
     lines += ["", "## Business outcomes", ""]
     lines += [f"- {k.replace('_', ' ')}: {val}" for k, val in b.items() if not k.endswith("note")]
+    lines += ["", b["resolution_note"]]
     lines += ["", "## Technical performance", ""]
     lines += [
         f"- intent accuracy: {t['intent']['accuracy']}",

@@ -290,6 +290,13 @@ known defect with a diagnosis rather than patched in a hurry.
 
 ## Open items
 
+**19 September 2026 status.** D13 was followed by grouped temperature scaling.
+Temperature 2 improved nested held-out log loss (0.2193 to 0.2040) and Brier
+score (0.03420 to 0.03286), while ECE worsened slightly (0.02358 to 0.02474).
+Confidence remains concentrated near 1.0 and the fresh 0.50-0.99 sweep is flat.
+The API, Prometheus endpoint and blocking extras CI job are now implemented, so
+the two historical bullets below saying they do not exist are superseded.
+
 - **R-07 primary breach CLOSED by D10.** Hybrid retrieval brought every
   fluency measure inside the 5pp condition (retrieval gap 8.29pp to 4.30pp)
   and lifted hit rate 79.8% to 96.4%. Re-audited, not argued.
@@ -317,10 +324,10 @@ known defect with a diagnosis rather than patched in a hurry.
 - Groundedness checking is lexical overlap. It catches drift from the sources
   but not a fluent paraphrase that reverses a meaning. Say so in the report
   rather than implying the guardrail is stronger than it is.
-- No FastAPI interface yet. The pipeline is importable and the harness is the
+- ~~No FastAPI interface yet.~~ Superseded: the local API is implemented; the pipeline is importable and the harness is the
   batch entry point; the API is a thin layer over `Pipeline.process`. It is
   also what would make monitoring (D12) fit its tool properly, rather than
   needing `--metrics-hold-seconds` to survive a scrape interval.
-- No CI pipeline yet (B-13). The suite runs on the standard library alone, so
+- ~~No CI pipeline yet (B-13).~~ Superseded: CI includes standard-library and blocking extras lanes. The suite runs on the standard library alone, so
   the GitHub Actions workflow is a checkout, a `python -m unittest`, and a
   harness run over the validation set.

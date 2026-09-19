@@ -11,6 +11,7 @@ import re
 
 from .generate import TEMPLATE_SENTENCES
 from .models import Draft, Passage, Validation
+from .providers import response_looks_complete
 
 # Patterns that must never appear in an outbound response.
 PII_PATTERNS = {
@@ -39,7 +40,7 @@ _SENT = re.compile(r"(?<=[.!?])\s+")
 _WORD = re.compile(r"[a-z0-9]+")
 
 
-_CITE = re.compile(r"\[([A-Z]+-[A-Z]+-\d+)\]")
+_CITE = re.compile(r"\[(DOC-[A-Z0-9-]+)\]")
 _BOILERPLATE = {" ".join(_WORD.findall(s.lower())) for s in TEMPLATE_SENTENCES}
 
 
@@ -63,7 +64,11 @@ def _unsupported_sentences(draft: Draft, passages: list[Passage], *, floor: floa
     everything = set().union(*by_id.values()) if by_id else set()
 
     out = []
-    for sentence in _SENT.split(draft.text):
+    # Attach citations written after punctuation to the preceding claim before
+    # splitting. Otherwise the cited source would be applied to the next claim.
+    aligned = re.sub(r"([.!?])(\s*(?:\[DOC-[A-Z0-9-]+\]\s*)+)",
+                     lambda m: " " + m[2].strip() + m[1] + " ", draft.text)
+    for sentence in _SENT.split(aligned):
         for line in sentence.split("\n"):
             normalised = " ".join(_WORD.findall(line.lower()))
             if not normalised or normalised in _BOILERPLATE:
@@ -94,18 +99,30 @@ def validate(draft: Draft, passages: list[Passage]) -> Validation:
     checks["forbidden_claims"] = forbidden or "none"
     findings += [f"forbidden_claim:{c}" for c in forbidden]
 
-    unresolvable = [c for c in draft.citations if c not in {p.doc_id for p in passages}]
+    # Inspect the actual outbound text as well as the metadata. A provider
+    # must not hide an invented reference by omitting it from its citation list.
+    cited = set(draft.citations) | set(_CITE.findall(draft.text))
+    unresolvable = sorted(cited - {p.doc_id for p in passages})
     checks["citations_resolve"] = not unresolvable
     findings += [f"unresolvable_citation:{c}" for c in unresolvable]
+
+    missing_evidence = not draft.abstained and (not passages or not cited)
+    checks["evidence_present"] = not missing_evidence
+    if missing_evidence:
+        findings.append("missing_evidence")
 
     unsupported = [] if draft.abstained else _unsupported_sentences(draft, passages)
     checks["unsupported_sentences"] = len(unsupported)
     if unsupported:
         findings.append(f"unsupported_claims:{len(unsupported)}")
 
-    # Private data, a forbidden commitment or a citation that does not resolve
-    # blocks release outright. Weak grounding is recorded but escalated rather
-    # than blocked, because the drafted text still helps the agent.
-    blocked = bool(pii or forbidden or unresolvable)
+    incomplete = not draft.abstained and not response_looks_complete(draft.text)
+    checks["response_complete"] = not incomplete
+    if incomplete:
+        findings.append("incomplete_response")
+
+    # Every failed safety check prevents release. The pipeline sends blocked
+    # tickets to human review without exposing the rejected draft.
+    blocked = bool(pii or forbidden or unresolvable or unsupported or missing_evidence or incomplete)
     checks["blocked"] = blocked
     return Validation(blocked=blocked, checks=checks, findings=findings)

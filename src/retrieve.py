@@ -187,7 +187,9 @@ class ChromaRetriever:
             ef = embedding_functions.SentenceTransformerEmbeddingFunction(
                 model_name="all-MiniLM-L6-v2"
             )
-            coll = client.get_or_create_collection("cloudserve_docs", embedding_function=ef)
+            import hashlib
+            fingerprint = hashlib.sha256(json.dumps(corpus, sort_keys=True).encode()).hexdigest()[:12]
+            coll = client.get_or_create_collection("cloudserve_" + fingerprint, embedding_function=ef)
             if coll.count() != len(corpus):
                 coll.upsert(
                     ids=[str(d["doc_id"]) for d in corpus],
@@ -205,6 +207,7 @@ class ChromaRetriever:
             res = self._collection.query(query_texts=[query], n_results=top_k)
         except Exception as exc:
             log.warning("chroma query failed (%s), degrading to lexical", exc)
+            self._collection = None
             return self.fallback.search(query, top_k=top_k)
         out = []
         for doc_id, text, meta, dist in zip(
@@ -268,6 +271,9 @@ class HybridRetriever:
             return self._fallback.search(query, top_k=top_k)
 
         sem = {p.doc_id: p for p in self.semantic.search(query, top_k=max(8, top_k))}
+        if self.semantic._collection is None:
+            self.semantic_available = False
+            return self._fallback.search(query, top_k=top_k)
         lex = {p.doc_id: p for p in self.lexical.search(query, top_k=max(8, top_k))}
         if not sem:
             return []

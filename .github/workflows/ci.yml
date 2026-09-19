@@ -7,9 +7,8 @@
 # rather than that GitHub's runner image happens not to ship them. If someone
 # adds a third-party import to the spine, this job is what fails.
 #
-# The extras are covered by a second job that is allowed to fail without
-# blocking a merge, because a Chroma or model-download problem on GitHub's
-# runners is not a defect in this repository.
+# The extras are covered by a blocking second job. A release must not claim the
+# audited hybrid configuration when its semantic half cannot start.
 
 name: CI
 
@@ -94,7 +93,6 @@ jobs:
   extras:
     name: "With the optional extras (hybrid retrieval, Prometheus)"
     runs-on: ubuntu-latest
-    continue-on-error: true      # informational: a CDN or model download is not our defect
     steps:
       - uses: actions/checkout@v4
 

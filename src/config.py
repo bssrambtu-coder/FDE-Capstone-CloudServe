@@ -9,6 +9,32 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+
+
+def load_local_env(path: Path | None = None) -> None:
+    """Read simple KEY=value settings without executing or expanding values.
+
+    Existing process variables take precedence. The application supports the
+    simple syntax in .env.example; no third-party dependency is required.
+    """
+    path = path or Path(__file__).resolve().parents[1] / ".env"
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip()
+        if not key.isidentifier():
+            continue
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        os.environ.setdefault(key, value)
+
+
+load_local_env()
 
 
 def _f(name: str, default: float) -> float:
@@ -59,11 +85,14 @@ class Config:
     )
     database_url: str = os.environ.get("DATABASE_URL", "sqlite:///./storage/decisions.db")
     log_level: str = os.environ.get("LOG_LEVEL", "INFO")
+    kill_switch_path: str = os.environ.get(
+        "KILL_SWITCH_PATH", str(Path(__file__).resolve().parents[1] / "storage" / "auto_responses.disabled")
+    )
 
     @property
     def sqlite_path(self) -> str:
         url = self.database_url
-        return url.replace("sqlite:///", "").lstrip("./") if url.startswith("sqlite") else url
+        return url[len("sqlite:///"):] if url.startswith("sqlite:///") else url
 
 
 CONFIG = Config()

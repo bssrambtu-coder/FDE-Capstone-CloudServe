@@ -9,7 +9,82 @@ chatbot; this is not one. See `docs/decisions.md` for why.
 
 ## Quick start
 
-No install step. Python 3.10 or later, standard library only.
+### OpenRouter connection
+
+Copy `.env.example` to `.env` if `.env` does not already exist, then set
+`OPENROUTER_API_KEY` locally. The application loads it automatically; Git
+ignores this file. Never include credentials in reports or source control.
+The example names the fixed free DeepSeek model used for final evaluation.
+Check OpenRouter availability before a future rerun because free model catalogues change.
+See https://openrouter.ai/docs/api/reference/overview for the API contract.
+
+Use `--use-provider` to enable real OpenRouter calls. Without that flag the
+pipeline uses local extractive generation. Missing credentials fail explicitly.
+
+```bash
+python -m evaluation.harness --input Capstone_Pack/05_Datasets/validation_tickets.json --output artifacts/openrouter-smoke --db artifacts/openrouter-smoke/decisions.db --backend lexical --use-provider --limit 3
+```
+
+Safety changes on 18 September 2026 block detected unsupported claims and
+unresolvable inline citations, validate escalation drafts, and reject invalid
+confidence values. Previously saved results below describe the earlier version
+and must be remeasured. Lexical grounding remains a heuristic, not proof that
+every claim is true. Routing calibration remains open; a local FastAPI interface
+is now available as described below.
+
+### Local API and operator pause control
+
+From the project folder, on Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.api --backend lexical
+```
+
+Open http://127.0.0.1:8000/docs to try the API. Add `--use-provider` only when
+ticket text and retrieved documentation are approved for transmission to
+OpenRouter. Without it, processing stays local. `/health` reports the generation
+mode, semantic retrieval availability and pause status. `/metrics` returns a
+JSON snapshot, not the separate Prometheus export format.
+
+`POST /tickets` accepts `ticket_id`, `channel`, `subject`, `body`, and optional
+customer metadata. Channels are `email`, `chat`, `docs_comment`, and `forum`.
+Unknown fields (including evaluation labels) are rejected. A minimal body is:
+
+```json
+{"ticket_id":"DEMO-1","channel":"chat","body":"How do I rotate an API key?"}
+```
+
+Replies separate `customer_response` from `agent_draft`; only an `answered`
+decision carries a customer response. Every request has a separate audit run,
+even when ticket IDs repeat. Database failures return 503 without releasing
+the reply. This API prepares responses; it does not send messages to customers.
+
+```powershell
+.\.venv\Scripts\python.exe -m src.control disable
+.\.venv\Scripts\python.exe -m src.control status
+.\.venv\Scripts\python.exe -m src.control enable
+```
+
+The pause persists across restarts and applies to both API and batch processing.
+Paused tickets are escalated and logged without calling the model. The pause
+is checked again after generation; it cannot recall a reply already released.
+There is deliberately no remote administration endpoint. Keep the server bound
+to localhost: authentication, deployment hardening, retention controls and
+outbound delivery are not implemented. Local decision logs contain ticket text.
+
+Final verification on 19 September 2026: all 73 tests passed with semantic
+retrieval available. The hybrid/extractive 80-ticket validation produced 56
+automatic answers, 24 escalations, no blocked drafts and no pipeline errors,
+with all 80 decisions reconciled. The approved full live OpenRouter run
+produced 54 released answers, 24 escalations and two groundedness blocks, with
+zero pipeline errors and 80 reconciled records. It made 66 provider calls,
+including six cache hits and four safe fallbacks. No must-not-auto-respond
+ticket was released. These are pipeline outcomes, not verified resolutions;
+FCR, CSAT and repeat contact remain unmeasured.
+
+Install the pinned environment before running the full system. The deliberate
+standard-library CI lane separately verifies that the batch safety spine can
+degrade without optional semantic, API or monitoring packages.
 
 ```bash
 python3 -m unittest discover -s tests
@@ -120,16 +195,15 @@ warning, because degrading reopens the fairness gap.
 python3 scripts/sweep_threshold.py --backend hybrid
 ```
 
-Swept across 0.50 to 0.999 on the 500 development tickets, the threshold does
-not change a single routing decision until 0.999, at which point every ticket
-escalates. The classifier emits two distinct confidence values across the whole
-set — 0.998 for 499 tickets and 0.8 for one — because Naive Bayes posteriors
-saturate and D4's four-band calibration then quantises them to a band accuracy.
+After grouped temperature calibration, the development sweep remains flat from
+0.50 through 0.99: 74.6% automation, 75.6% route agreement, 18.4% over-answering
+and 6.0% under-answering. At 0.995 one more ticket escalates and agreement falls.
+Confidence is still concentrated near 1.0, so the threshold remains a weak
+control despite better held-out log loss and Brier score.
 
-It is left at 0.80 and described as inert rather than tuned. The real finding
-the sweep surfaced is that 20.0% of tickets are answered where the expert
-escalated, against 1.2% the other way. Full reasoning and the fixes that would
-actually work are in `docs/decisions.md` D13.
+It is left at 0.80 and described as effectively inert rather than tuned. The
+real finding is dangerous over-answering; full reasoning and the calibration
+evidence are in `docs/decisions.md` and `evaluation/final/`.
 
 ## Monitoring
 
@@ -169,7 +243,8 @@ process exits before Prometheus ever reaches it and the dashboard stays empty.
 
 ## Attribution
 
-Written by Shashidhar B S. Developed with Claude Code (Anthropic); see the AI
-tool declaration in the project report for what it contributed and where its
-output was corrected. No third-party implementation was copied. The datasets in
-`Capstone_Pack/` are supplied course material.
+Written by Shashidhar B S. The initial implementation used Claude Opus; final
+review, safety, calibration, evaluation and packaging used OpenAI Codex. The
+approved live generator was the configured DeepSeek model through OpenRouter.
+See `docs/ATTRIBUTION.md`. No third-party implementation was copied. The
+datasets in `Capstone_Pack/` are supplied course material.

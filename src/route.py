@@ -8,6 +8,8 @@ could read, which the Build Specification requires.
 
 from __future__ import annotations
 
+import math
+import re
 from .models import Classification, Passage, Routing, Ticket
 
 # Intents that are never answered automatically, whatever the confidence.
@@ -18,7 +20,7 @@ from .models import Classification, Passage, Routing, Ticket
 # have no supporting documentation in any instance. These are commitments the
 # system is not entitled to make on CloudServe's behalf.
 POLICY_ESCALATE = frozenset(
-    {"compliance_request", "security_incident", "feature_request", "unclear_request"}
+    {"compliance_request", "security_incident", "feature_request", "unclear_request", "data_residency"}
 )
 
 # Intents with no documentation coverage at all: retrieval is skipped rather
@@ -33,6 +35,12 @@ def route(
     *,
     threshold: float,
 ) -> Routing:
+    if not math.isfinite(classification.confidence) or not 0 <= classification.confidence <= 1:
+        return Routing("escalate", "The confidence score is invalid and requires human review.",
+                       "invalid_confidence")
+    if not math.isfinite(threshold) or not 0 <= threshold <= 1:
+        return Routing("escalate", "The routing threshold is invalid and requires human review.",
+                       "invalid_threshold")
     if classification.intent in POLICY_ESCALATE:
         return Routing(
             action="escalate",
@@ -42,6 +50,10 @@ def route(
             ),
             rule="policy_intent",
         )
+
+    if re.search(r"\b(compromis\w*|breach|unauthori[sz]ed access|exposed key|leaked key|"
+                 r"billing dispute|dispute.{0,30}(charge|invoice)|refund|chargeback)\b", ticket.text, re.I):
+        return Routing("escalate", "Security or financial dispute requires specialist review.", "sensitive_request")
 
     if classification.confidence < threshold:
         return Routing(

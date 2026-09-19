@@ -1,0 +1,83 @@
+{
+  "dataset": "500 development tickets; exploratory retrieval tuning",
+  "candidates": [
+    {
+      "backend": "lexical",
+      "cutoff": 0.3,
+      "hit_rate": 0.896358543417367,
+      "correct_abstention": 0.26573426573426573,
+      "balanced_score": 0.5810464045758164
+    },
+    {
+      "backend": "lexical",
+      "cutoff": 0.42,
+      "hit_rate": 0.7983193277310925,
+      "correct_abstention": 0.38461538461538464,
+      "balanced_score": 0.5914673561732385
+    },
+    {
+      "backend": "lexical",
+      "cutoff": 0.5,
+      "hit_rate": 0.6610644257703081,
+      "correct_abstention": 0.5384615384615384,
+      "balanced_score": 0.5997629821159233
+    },
+    {
+      "backend": "lexical",
+      "cutoff": 0.6,
+      "hit_rate": 0.5658263305322129,
+      "correct_abstention": 0.6293706293706294,
+      "balanced_score": 0.5975984799514211
+    },
+    {
+      "backend": "lexical",
+      "cutoff": 0.7,
+      "hit_rate": 0.38935574229691877,
+      "correct_abstention": 0.8111888111888111,
+      "balanced_score": 0.600272276742865
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.5,
+      "hit_rate": 0.9719887955182073,
+      "correct_abstention": 0.24475524475524477,
+      "balanced_score": 0.608372020136726
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.55,
+      "hit_rate": 0.9719887955182073,
+      "correct_abstention": 0.24475524475524477,
+      "balanced_score": 0.608372020136726
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.6,
+      "hit_rate": 0.9635854341736695,
+      "correct_abstention": 0.25874125874125875,
+      "balanced_score": 0.6111633464574642
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.65,
+      "hit_rate": 0.8375350140056023,
+      "correct_abstention": 0.3356643356643357,
+      "balanced_score": 0.586599674834969
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.7,
+      "hit_rate": 0.4565826330532213,
+      "correct_abstention": 0.6293706293706294,
+      "balanced_score": 0.5429766312119253
+    },
+    {
+      "backend": "hybrid",
+      "cutoff": 0.75,
+      "hit_rate": 0.17366946778711484,
+      "correct_abstention": 0.8741258741258742,
+      "balanced_score": 0.5238976709564945
+    }
+  ],
+  "selection": "Retain hybrid gate 0.60 to prioritize coverage; report the abstention tradeoff and enforce policy before automatic release."
+}

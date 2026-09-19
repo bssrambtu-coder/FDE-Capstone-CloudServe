@@ -1,0 +1,325 @@
+{
+ "volume": {
+  "tickets_processed": 80,
+  "answered_automatically": 54,
+  "escalated": 24,
+  "blocked_by_guardrails": 2,
+  "pipeline_errors": 0,
+  "degraded_responses": 4
+ },
+ "business": {
+  "automation_rate_pct": 67.5,
+  "first_contact_resolution_pct": null,
+  "resolution_note": "Resolution requires customer follow-up; automatic answers are not confirmed resolutions.",
+  "escalation_rate_pct": 32.5,
+  "mean_response_time_ms": 11742.24,
+  "median_response_time_ms": 11219.06,
+  "customer_satisfaction": null,
+  "customer_satisfaction_note": "Not measurable from an unattended batch run; requires post-response survey.",
+  "repeat_contacts": null,
+  "repeat_contacts_note": "Requires a seven-day window after each reply; not observable in a single run."
+ },
+ "technical": {
+  "intent": {
+   "accuracy": 1.0,
+   "macro_precision": 1.0,
+   "per_class": {
+    "account_access": {
+     "support": 4,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "api_key_issue": {
+     "support": 6,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "api_usage_question": {
+     "support": 4,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "authentication_failure": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "billing_query": {
+     "support": 10,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "compliance_request": {
+     "support": 1,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "configuration_help": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "data_export": {
+     "support": 1,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "data_residency": {
+     "support": 6,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "database_issue": {
+     "support": 1,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "deployment_failure": {
+     "support": 5,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "feature_request": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "integration_help": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "onboarding": {
+     "support": 4,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "performance_degradation": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "quota_or_overage": {
+     "support": 2,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "rate_limit": {
+     "support": 1,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "rollback_request": {
+     "support": 6,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "security_incident": {
+     "support": 4,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "sso_configuration": {
+     "support": 1,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "unclear_request": {
+     "support": 6,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    },
+    "webhook_issue": {
+     "support": 3,
+     "precision": 1.0,
+     "recall": 1.0,
+     "f1": 1.0
+    }
+   }
+  },
+  "urgency": {
+   "accuracy": 0.475,
+   "per_class": {
+    "high": {
+     "support": 25,
+     "precision": 0.5,
+     "recall": 0.36,
+     "f1": 0.4186
+    },
+    "low": {
+     "support": 20,
+     "precision": 0.5,
+     "recall": 0.2,
+     "f1": 0.2857
+    },
+    "medium": {
+     "support": 35,
+     "precision": 0.463,
+     "recall": 0.7143,
+     "f1": 0.5618
+    }
+   }
+  },
+  "retrieval": {
+   "hit_rate_pct": 98.11,
+   "tickets_expecting_a_document": 53,
+   "correct_abstention_pct": 33.33,
+   "tickets_expecting_no_document": 27
+  },
+  "latency_ms": {
+   "median": 11219.06,
+   "p95": 23144.31,
+   "max": 49046.5
+  },
+  "labels_present": true,
+  "routing": {
+   "labelled_tickets": 80,
+   "agreement_pct": 72.5,
+   "over_answered": 14,
+   "under_answered": 8,
+   "must_not_auto_respond_violations": 0
+  }
+ },
+ "governance": {
+  "decisions_logged": 80,
+  "tickets_processed": 80,
+  "log_reconciles": true,
+  "guardrail_activations_by_type": {
+   "unsupported_claims": 2
+  },
+  "private_data_detections_in_drafts": 0,
+  "private_data_detections_in_outbound": 0,
+  "responses_released": 54,
+  "fairness": {
+   "customer_region": {
+    "automation_rate_pct": {
+     "asia_pacific": 71.43,
+     "europe": 72.0,
+     "latin_america": 28.57,
+     "north_america": 70.37
+    },
+    "group_sizes": {
+     "asia_pacific": 21,
+     "europe": 25,
+     "latin_america": 7,
+     "north_america": 27
+    },
+    "spread_pp": 43.43,
+    "within_tolerance": false,
+    "tolerance_pp": 5.0
+   },
+   "customer_tier": {
+    "automation_rate_pct": {
+     "business": 83.33,
+     "enterprise": 62.5,
+     "standard": 57.14
+    },
+    "group_sizes": {
+     "business": 30,
+     "enterprise": 8,
+     "standard": 42
+    },
+    "spread_pp": 26.19,
+    "within_tolerance": false,
+    "tolerance_pp": 5.0
+   },
+   "language_fluency": {
+    "automation_rate_pct": {
+     "fluent": 70.49,
+     "non_fluent": 57.89
+    },
+    "group_sizes": {
+     "fluent": 61,
+     "non_fluent": 19
+    },
+    "spread_pp": 12.6,
+    "within_tolerance": false,
+    "tolerance_pp": 5.0
+   }
+  }
+ },
+ "provider": {
+  "calls": 66,
+  "cache_hits": 6,
+  "degradations": 4,
+  "circuit_breaker_open": false
+ },
+ "monitoring": {
+  "counters": {
+   "tickets_processed_total": {
+    "forum|escalated": 4.0,
+    "chat|escalated": 6.0,
+    "docs_comment|escalated": 5.0,
+    "email|answered": 22.0,
+    "chat|answered": 15.0,
+    "docs_comment|blocked": 1.0,
+    "forum|answered": 7.0,
+    "docs_comment|answered": 10.0,
+    "chat|blocked": 1.0,
+    "email|escalated": 9.0
+   },
+   "escalations_total": {
+    "sensitive_request": 3.0,
+    "policy_intent": 20.0,
+    "no_supporting_documentation": 1.0
+   },
+   "responses_degraded_total": {
+    "_": 4.0
+   },
+   "guardrail_blocks_total": {
+    "unsupported_claims:1": 2.0
+   },
+   "retrieval_abstentions_total": {
+    "_": 1.0
+   }
+  },
+  "gauges": {
+   "retrieval_semantic_available": 1.0
+  },
+  "response_seconds": {
+   "count": 80,
+   "p50": 11.5619,
+   "p95": 23.1041,
+   "max": 49.0465
+  },
+  "exporter": "prometheus available, exporter not started"
+ },
+ "run": {
+  "run_id": "6bf4fa7047d5",
+  "input": "Capstone_Pack\\05_Datasets\\validation_tickets.json",
+  "tickets": 80,
+  "wall_clock_seconds": 939.56,
+  "tickets_per_second": 0.09,
+  "config": {
+   "threshold": 0.8,
+   "retrieval_floor": 0.42,
+   "backend": "hybrid",
+   "retriever": "hybrid-rrf",
+   "provider_enabled": true,
+   "model": "deepseek/deepseek-v4-flash-0731:free",
+   "semantic_available": true,
+   "prompt_version": "answer_v2"
+  }
+ }
+}

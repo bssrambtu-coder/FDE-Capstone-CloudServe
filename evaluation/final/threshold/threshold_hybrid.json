@@ -1,0 +1,525 @@
+{
+ "input": "Capstone_Pack/05_Datasets/development_tickets.json",
+ "backend": "hybrid",
+ "semantic_available": true,
+ "tickets": 500,
+ "confidence_distribution": {
+  "p1": 0.9936,
+  "p5": 0.9999,
+  "p10": 0.9999,
+  "p25": 0.9999,
+  "p50": 0.9999,
+  "p75": 0.9999,
+  "p90": 0.9999,
+  "p99": 0.9999
+ },
+ "current_threshold": 0.8,
+ "best_by_agreement": {
+  "threshold": 0.5,
+  "automation_rate_pct": 74.6,
+  "route_agreement_pct": 75.6,
+  "over_answered_pct": 18.4,
+  "under_answered_pct": 6.0,
+  "gaps_pp": {
+   "customer_region": 13.12,
+   "customer_tier": 3.53,
+   "language_fluency": 1.89
+  },
+  "max_gap_pp": 13.12,
+  "fairness_condition_holds": false,
+  "rules": {
+   "confident_and_supported": 373,
+   "policy_intent": 116,
+   "no_supporting_documentation": 8,
+   "sensitive_request": 3
+  }
+ },
+ "best_passing_fairness": null,
+ "sweep": [
+  {
+   "threshold": 0.5,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.525,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.55,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.575,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.6,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.625,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.65,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.675,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.7,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.725,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.75,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.775,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.8,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.825,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.85,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.875,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.9,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.925,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.95,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 8,
+    "sensitive_request": 3
+   }
+  },
+  {
+   "threshold": 0.975,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 7,
+    "sensitive_request": 3,
+    "low_confidence": 1
+   }
+  },
+  {
+   "threshold": 0.98,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 7,
+    "sensitive_request": 3,
+    "low_confidence": 1
+   }
+  },
+  {
+   "threshold": 0.985,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 7,
+    "sensitive_request": 3,
+    "low_confidence": 1
+   }
+  },
+  {
+   "threshold": 0.99,
+   "automation_rate_pct": 74.6,
+   "route_agreement_pct": 75.6,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.0,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.53,
+    "language_fluency": 1.89
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 373,
+    "policy_intent": 116,
+    "no_supporting_documentation": 7,
+    "sensitive_request": 3,
+    "low_confidence": 1
+   }
+  },
+  {
+   "threshold": 0.995,
+   "automation_rate_pct": 74.4,
+   "route_agreement_pct": 75.4,
+   "over_answered_pct": 18.4,
+   "under_answered_pct": 6.2,
+   "gaps_pp": {
+    "customer_region": 13.12,
+    "customer_tier": 3.2,
+    "language_fluency": 2.72
+   },
+   "max_gap_pp": 13.12,
+   "fairness_condition_holds": false,
+   "rules": {
+    "confident_and_supported": 372,
+    "policy_intent": 116,
+    "no_supporting_documentation": 7,
+    "sensitive_request": 3,
+    "low_confidence": 2
+   }
+  }
+ ]
+}

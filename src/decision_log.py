@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS decisions (
     error       TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_decisions_run ON decisions(run_id);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_decisions_run_ticket ON decisions(run_id, ticket_id);
 """
 
 
@@ -64,6 +63,10 @@ class DecisionLog:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(self.path)
         self.conn.executescript(SCHEMA)
+        columns = {r[1] for r in self.conn.execute("PRAGMA table_info(decisions)")}
+        if "audit_details" not in columns:
+            self.conn.execute("ALTER TABLE decisions ADD COLUMN audit_details TEXT")
+        self.conn.execute("DROP INDEX IF EXISTS idx_decisions_run_ticket")
         self.conn.commit()
         self.run_id: str | None = None
 
@@ -77,24 +80,30 @@ class DecisionLog:
         self.conn.commit()
         return self.run_id
 
-    def record(self, outcome: Outcome, input_text: str) -> None:
-        # INSERT OR REPLACE keeps the unique (run_id, ticket_id) guarantee even
-        # if the same file contains a duplicate ticket_id, so the reconciliation
-        # in A8 stays meaningful rather than double-counting.
-        self.conn.execute(
-            "INSERT OR REPLACE INTO decisions (run_id, logged_at, ticket_id, channel,"
+    def record(self, outcome: Outcome, input_text: str) -> int:
+        # Append every processed occurrence, including repeated source IDs.
+        cursor = self.conn.execute(
+            "INSERT INTO decisions (run_id, logged_at, ticket_id, channel,"
             " input_text, intent, urgency, confidence, sources, action, rule, reason,"
-            " response, citations, guardrails, latency_ms, degraded, error)"
-            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            " response, citations, guardrails, latency_ms, degraded, error, audit_details)"
+            " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (
                 self.run_id, _now(), outcome.ticket_id, outcome.channel,
-                input_text[:4000], outcome.intent, outcome.urgency, outcome.confidence,
+                input_text, outcome.intent, outcome.urgency, outcome.confidence,
                 json.dumps(outcome.sources), outcome.action, outcome.rule, outcome.reason,
                 outcome.response, json.dumps(outcome.citations),
                 json.dumps(outcome.guardrail_findings), outcome.latency_ms,
-                int(outcome.degraded), outcome.error,
+                int(outcome.degraded), outcome.error, json.dumps(outcome.audit_details),
             ),
         )
+
+        return cursor.lastrowid
+
+    def mark_paused(self, decision_id: int) -> None:
+        self.conn.execute("UPDATE decisions SET action='escalated', rule='automation_paused', "
+                          "reason='Automatic replies are paused by the operator.', response=NULL, citations='[]' "
+                          "WHERE id=? AND run_id=?", (decision_id, self.run_id))
+        self.conn.commit()
 
     def finish_run(self, ticket_count: int) -> None:
         self.conn.execute(

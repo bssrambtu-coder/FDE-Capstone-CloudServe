@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from dataclasses import asdict
@@ -26,7 +27,7 @@ from src.decision_log import DecisionLog
 from src.ingest import load_tickets
 from src.monitoring import METRICS
 from src.pipeline import Pipeline
-from src.providers import get_provider
+from src.providers import get_provider, ProviderError
 
 from . import metrics as metrics_mod
 
@@ -96,7 +97,11 @@ def main(argv: list[str] | None = None) -> int:
     # Metrics.reset_tally for why only one of the two is cleared.
     METRICS.reset_tally()
 
-    provider = get_provider() if args.use_provider else None
+    try:
+        provider = get_provider() if args.use_provider else None
+    except ProviderError as exc:
+        log.error("Provider configuration: %s", exc)
+        return 2
     pipeline = Pipeline(config=config, provider=provider)
     log.info("retriever=%s threshold=%.2f floor=%.2f provider=%s",
              getattr(pipeline.retriever, "name", "?"), config.confidence_threshold,
@@ -160,6 +165,9 @@ def main(argv: list[str] | None = None) -> int:
                    "retriever": getattr(pipeline.retriever, "name", "?"),
                    "provider_enabled": bool(provider)},
     }
+    report['run']['config']['model'] = os.environ.get('MODEL_NAME') if provider else None
+    report['run']['config']['semantic_available'] = bool(getattr(pipeline.retriever, 'semantic_available', False))
+    report['run']['config']['prompt_version'] = 'answer_v2'
 
     (out_dir / "results.json").write_text(
         json.dumps([asdict(o) for o in outcomes], indent=1), encoding="utf-8"

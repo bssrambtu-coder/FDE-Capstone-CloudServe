@@ -31,6 +31,7 @@ class Classifier:
         self.model = self._load("intent_nb.json")
         self.urgency = self._load("urgency_prior.json")
         self.calibration = self._load("calibration.json")
+        self.temperature = self._load("temperature.json").get("temperature")
         self._vocab = set(self.model.get("vocab", [])) if self.model else set()
         if not self.model:
             log.warning("no intent model in %s; run scripts/train_classifier.py. "
@@ -57,6 +58,8 @@ class Classifier:
             for t in tokens:
                 lp += weights.get(t, default) - denom
             scores[label] = lp
+        if self.temperature:
+            scores = {k: v / float(self.temperature) for k, v in scores.items()}
         top = max(scores.values())
         exp = {k: math.exp(s - top) for k, s in scores.items()}
         z = sum(exp.values()) or 1.0
@@ -70,6 +73,8 @@ class Classifier:
         band were actually right" rather than "this is how sure the maths
         feels". Falls through to the raw value if no band matches.
         """
+        if self.temperature:
+            return min(raw, 0.9999)
         for b in self.calibration.get("bins", []):
             if b["lo"] <= raw < b["hi"]:
                 return float(b["accuracy"])

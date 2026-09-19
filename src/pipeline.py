@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import logging
 import time
+from dataclasses import asdict
 
 from .classify import Classifier
 from .config import CONFIG, Config
+from .control import AutomationControl
 from .generate import generate
 from .models import Outcome, Ticket
 from .monitoring import METRICS, Metrics
@@ -32,8 +34,10 @@ class Pipeline:
         retriever: Retriever | None = None,
         provider=None,
         metrics: Metrics = METRICS,
+        control: AutomationControl | None = None,
     ):
         self.config = config
+        self.control = control or AutomationControl(config.kill_switch_path)
         self.classifier = classifier or Classifier()
         self.retriever = retriever or build_retriever(
             config.corpus_path, floor=config.retrieval_floor,
@@ -52,7 +56,17 @@ class Pipeline:
     def process(self, ticket: Ticket) -> Outcome:
         started = time.perf_counter()
         try:
-            outcome = self._process(ticket, started)
+            if self.control.disabled:
+                outcome = self._paused(ticket)
+            else:
+                outcome = self._process(ticket, started)
+            # Recheck after generation so a pause also catches in-flight work.
+            if outcome.action == "answered" and self.control.disabled:
+                outcome.action = "escalated"
+                outcome.rule = "automation_paused"
+                outcome.reason = "Automatic replies are paused by the operator."
+                outcome.response = None
+                outcome.citations = []
         except Exception as exc:  # noqa: BLE001 - the containment boundary
             log.exception("ticket %s failed, escalating", ticket.ticket_id)
             outcome = Outcome(
@@ -62,12 +76,20 @@ class Pipeline:
                 rule="pipeline_error",
                 reason="The system could not process this ticket and passed it to a person.",
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
-                error=f"{type(exc).__name__}: {exc}",
+                intent="unclear_request", urgency="medium", confidence=0.0,
+                error=type(exc).__name__,
             )
         # Recorded on both paths, and outside the try, so a crashed ticket is
         # as visible on the dashboard as a successful one.
         self.metrics.observe_outcome(outcome)
         return outcome
+
+    @staticmethod
+    def _paused(ticket):
+        return Outcome(ticket_id=ticket.ticket_id, channel=ticket.channel,
+                       action="escalated", rule="automation_paused",
+                       intent="unclear_request", urgency="medium", confidence=0.0,
+                       reason="Automatic replies are paused by the operator.")
 
     def _process(self, ticket: Ticket, started: float) -> Outcome:
         classification = self.classifier.classify(ticket.text)
@@ -76,6 +98,7 @@ class Pipeline:
         if classification.intent not in NO_DOC_INTENTS:
             passages = self.retriever.search(ticket.text, top_k=self.config.retrieval_top_k)
             self.metrics.observe_retrieval(passages)
+            self.metrics.set_semantic_available(bool(getattr(self.retriever, "semantic_available", False)))
 
         routing = route(
             ticket, classification, passages, threshold=self.config.confidence_threshold
@@ -91,6 +114,11 @@ class Pipeline:
             urgency=classification.urgency,
             confidence=classification.confidence,
             sources=[p.doc_id for p in passages],
+            audit_details={"classification": asdict(classification),
+                           "retrieval": [asdict(p) for p in passages],
+                           "threshold": self.config.confidence_threshold,
+                           "retrieval_backend": self.config.retrieval_backend,
+                           "provider_model": str(getattr(getattr(self.provider, "inner", self.provider), "model", "extractive"))},
         )
 
         if routing.action == "escalate":
@@ -99,8 +127,11 @@ class Pipeline:
             # with context is worth more to an agent than a raw one.
             if passages:
                 draft, degraded = generate(ticket, passages, provider=self.provider)
-                outcome.response = draft.text
-                outcome.citations = draft.citations
+                verdict = validate(draft, passages)
+                outcome.audit_details["validation"] = verdict.checks
+                outcome.guardrail_findings = verdict.findings
+                outcome.response = None if verdict.blocked else draft.text
+                outcome.citations = [] if verdict.blocked else draft.citations
                 outcome.degraded = degraded
             outcome.latency_ms = round((time.perf_counter() - started) * 1000, 2)
             return outcome
@@ -109,6 +140,7 @@ class Pipeline:
         outcome.degraded = degraded
 
         verdict = validate(draft, passages)
+        outcome.audit_details["validation"] = verdict.checks
         outcome.guardrail_findings = verdict.findings
 
         if verdict.blocked:
