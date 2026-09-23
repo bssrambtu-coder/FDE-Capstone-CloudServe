@@ -5,9 +5,12 @@
 
 **Verdict, lexical backend: BREACHED on retrieval quality.**
 **Verdict after mitigation (hybrid backend): primary breach CLOSED; two
-secondary regional breaches remain open.** See "Re-audit" at the end — it is
-the current state and supersedes the lexical figures below, which are retained
-because they are what identified the defect.
+secondary regional breaches remain open.**
+**Verdict on the submitted system (final re-audit): every fluency and tier
+measure passes; regional routing agreement (13.12pp) and regional citation
+coverage (8.45pp) remain BREACHED.** See "Final re-audit" at the end. It is the
+current state and supersedes everything above it, which is retained because it
+is the record of how the defect was found and what closed it.
 
 ## The condition being tested
 
@@ -276,6 +279,63 @@ answering something unsupported. That work now falls to routing and to the
 groundedness guardrail, and the confidence threshold has not yet been tuned to
 carry it. This is the first thing to fix, and it is R-08.
 
+## Final re-audit — the submitted system
+
+**Run:** 24 September 2026, hybrid backend, 500 development tickets.
+**Output:** `evaluation/final/fairness/fairness_hybrid.json` (and `.txt`).
+
+Between the 4 September re-audit and submission, the 18 September safety review
+added the sensitive-request routing rule and validation of escalation drafts,
+and the classifier gained grouped temperature calibration. Any of those can
+move who gets an automatic answer, so the audit was re-run on the final code.
+The 24 September wording fixes (D14) change no decision; the re-run's decisions
+match the saved 19 September results on all 500 tickets.
+
+| Measure | Dimension | Hybrid, 4 Sep | **Final** | Condition |
+|---|---|---|---|---|
+| Retrieval hit rate | `language_fluency` | 4.30pp | **4.30pp** | ok |
+| Retrieval hit rate | `customer_region` | 4.88pp | **4.88pp** | ok |
+| Retrieval hit rate | `customer_tier` | 4.00pp | **4.00pp** | ok |
+| Citation present | `language_fluency` | 4.04pp | **4.04pp** | ok |
+| Citation present | `customer_tier` | 1.85pp | **1.85pp** | ok |
+| Citation present | `customer_region` | 8.45pp | **8.45pp** | **FAIL** |
+| Routing agreement | `language_fluency` | 1.58pp | **1.89pp** | ok |
+| Routing agreement | `customer_tier` | 5.80pp | **3.53pp** | ok |
+| Routing agreement | `customer_region` | 7.99pp | **13.12pp** | **FAIL** |
+| Automation residual | `language_fluency` | 1.79pp | **3.07pp** | ok |
+| Automation residual | `customer_tier` | 2.40pp | **1.39pp** | ok |
+| Automation residual | `customer_region` | 3.47pp | **4.30pp** | ok |
+
+**What moved.** The tier routing breach closed (5.80 to 3.53). The regional
+routing gap widened (7.99 to 13.12): Latin America 68.33%, Asia Pacific 73.11%,
+North America 74.71%, Europe 81.46%. Retrieval and citation figures are
+unchanged, as expected, since retrieval did not change. Automation fell from
+81% to 74.6%, and correct abstention rose from 12.6% to 25.9%.
+
+**What did not move it.** The confidence threshold. The R-08 entry above names
+it as the next lever; D13 then showed it changes almost no routing decision, so
+that lever does not exist. The widening was not diagnosed further before
+submission. The candidates are the new sensitive-request rule, which the release
+tests confirm ignores customer group, and the changed escalation paths.
+
+**What it is not.** The largest raw automation gaps are not statistically
+significant (p = 0.12 to 0.33), and the experts' own escalate/answer labels
+vary 14.43 points by region, so part of the routing gap may be inherited from
+the labels. That share has not been separated, so the breach is reported as a
+breach.
+
+**R-08, as it stands:**
+
+| Field | Value |
+|---|---|
+| **ID** | R-08 |
+| **Risk** | Routing agreement with expert judgement varies 13.12pp by region, and citation coverage 8.45pp. |
+| **Likelihood** | Certain, measured on the submitted system |
+| **Impact** | Medium. The gap is in whether a person reviews, not in answer correctness: zero `must_not_auto_respond` tickets were auto-answered. |
+| **Next lever** | Diagnose the regional routing gap per rule; replace or recalibrate the classifier so confidence can act as a control (D13); re-audit on a fresh holdout. |
+| **Accountable** | Shashidhar B S |
+| **Deploy recommendation** | Unchanged: acceptable only behind a review queue. |
+
 ## Reproducing
 
 ```bash
@@ -283,5 +343,6 @@ python3 scripts/fairness_audit.py --min-cell 8                    # lexical
 python3 scripts/fairness_audit.py --backend hybrid --min-cell 8    # recommended
 ```
 
-Writes `evaluation/fairness/fairness_<backend>.json`. Defaults to the
-development set; pass `--input` for any other file.
+Writes `evaluation/final/fairness/fairness_<backend>.json`. Defaults to the
+development set; pass `--input` for any other file. The 4 September outputs are
+in `evaluation/archive/fairness/`.

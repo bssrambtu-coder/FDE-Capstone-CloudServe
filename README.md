@@ -9,6 +9,13 @@ chatbot; this is not one. See `docs/decisions.md` for why.
 
 ## Quick start
 
+No API key is needed. Without `--use-provider`, everything runs offline and
+answers are extracted directly from the documentation; the key is only for the
+live model.
+
+Commands are shown for Windows PowerShell (`.\.venv\Scripts\python.exe`) where
+a virtual environment is involved; on macOS or Linux use `.venv/bin/python`.
+
 ### OpenRouter connection
 
 Copy `.env.example` to `.env` if `.env` does not already exist, then set
@@ -27,10 +34,11 @@ python -m evaluation.harness --input Capstone_Pack/05_Datasets/validation_ticket
 
 Safety changes on 18 September 2026 block detected unsupported claims and
 unresolvable inline citations, validate escalation drafts, and reject invalid
-confidence values. Previously saved results below describe the earlier version
-and must be remeasured. Lexical grounding remains a heuristic, not proof that
-every claim is true. Routing calibration remains open; a local FastAPI interface
-is now available as described below.
+confidence values. Every result this README quotes was measured after those
+changes and is saved in `evaluation/final/`; results from before them are kept
+in `evaluation/archive/` for the decision log's history only. Lexical grounding
+remains a heuristic, not proof that every claim is true, and routing
+calibration remains open (D13).
 
 ### Local API and operator pause control
 
@@ -85,8 +93,9 @@ the Submission Guide, and the live Prometheus and Grafana stack
 (`monitoring/docker-compose.yml`). The demo runner checks every step against
 its rehearsed outcome and exits non-zero if one differs; CI runs it on every push.
 
-Final verification on 19 September 2026: all 73 tests passed with semantic
-retrieval available. The hybrid/extractive 80-ticket validation produced 56
+The suite is 86 test runs (83 distinct tests; three pause-control tests also
+run under the API's setup), and all pass with the pinned environment installed.
+Final evaluation on 19 September 2026, with semantic retrieval available: the hybrid/extractive 80-ticket validation produced 56
 automatic answers, 24 escalations, no blocked drafts and no pipeline errors,
 with all 80 decisions reconciled. The approved full live OpenRouter run
 produced 54 released answers, 24 escalations and two groundedness blocks, with
@@ -106,7 +115,7 @@ python3 -m unittest discover -s tests
 ```bash
 python3 -m evaluation.harness \
   --input Capstone_Pack/05_Datasets/validation_tickets.json \
-  --output evaluation/results
+  --output artifacts/validation
 ```
 
 That writes `results.json`, `metrics.json` and `metrics.md` into the output
@@ -182,7 +191,8 @@ failures.
 condition holds under and a run with no `.env` must not silently pick the one
 the audit fails. Defaulting to it costs nothing: with the extras missing it
 degrades to lexical and says so in the log, so the gate can still never fail on
-a dependency. `docs/fairness_audit.md` signs off the hybrid numbers.
+a dependency. `docs/fairness_audit.md` has the full audit, including the gap
+that hybrid retrieval does not close (see Fairness below).
 
 Force the zero-dependency path with `--backend lexical` or
 `RETRIEVAL_BACKEND=lexical`.
@@ -197,10 +207,36 @@ python3 -m evaluation.harness --input <file> --output <dir> --backend hybrid
 | `lexical` | 79.8% | 8.3pp FAIL | 15.0pp FAIL | nothing |
 | **`hybrid`** (default) | **96.4%** | **4.3pp ok** | **4.9pp ok** | extras |
 
-Measured on the 500 development tickets. `hybrid` ranks by reciprocal rank
+Retrieval hit-rate gaps between customer groups, re-measured on the final
+system over the 500 development tickets. `hybrid` ranks by reciprocal rank
 fusion over BM25 and `all-MiniLM-L6-v2`, and gates abstention on the semantic
 score alone. If the extras are missing it degrades to lexical and logs a
 warning, because degrading reopens the fairness gap.
+
+## Fairness
+
+```bash
+python3 scripts/fairness_audit.py --backend hybrid
+```
+
+The governance condition is a gap of at most five points between customer
+groups. On the final system, over the 500 development tickets, it holds for
+every language-fluency and tier measure and for regional retrieval, and fails
+on two regional quality measures:
+
+| Measure | Language fluency | Customer tier | Region |
+|---|---|---|---|
+| Retrieval hit rate | 4.30 pt, pass | 4.00 pt, pass | 4.88 pt, pass |
+| Routing agreement with the expert | 1.89 pt, pass | 3.53 pt, pass | **13.12 pt, fail** |
+| Citation coverage | 4.04 pt, pass | 1.85 pt, pass | **8.45 pt, fail** |
+
+Regional routing agreement runs from 68.3% for Latin America to 81.5% for
+Europe. Raw automation rates also differ (8.22 points by region, 5.77 by tier,
+7.15 by fluency), but once each group's mix of tickets is accounted for the
+residuals are 4.30, 1.39 and 3.07 points, inside the condition. The experts'
+own labels vary 14.43 points by region, so part of the routing gap may come
+from the labels; that share has not been separated. Full output:
+`evaluation/final/fairness/`, reasoning: `docs/fairness_audit.md` and D14.
 
 ## The confidence threshold is inert
 
@@ -253,6 +289,31 @@ panel on the dashboard and the only `critical` rule in `monitoring/alerts.yml`.
 The `--metrics-hold-seconds` flag exists because a run over 500 tickets
 finishes in under a second, inside a 15s scrape interval. Without the hold the
 process exits before Prometheus ever reaches it and the dashboard stays empty.
+
+## Preparing the submission
+
+The Submission Guide wants one archive, `ShashidharBS_Capstone_Submission.zip`,
+holding exactly `01_Video`, `02_Report`, `03_Workbooks` and `04_Source_Code`.
+From the project folder on Windows, with the pinned environment installed:
+
+```powershell
+# 1. Report, workbooks and effort record, from the current repository and effort log
+.\.venv\Scripts\python.exe scripts\build_submission_docs.py
+
+# 2. The report and effort log as PDFs, as the guide requires
+.\.venv\Scripts\python.exe scripts\render_submission_pdf.py submission\02_Report\ShashidharBS_Capstone_Report.docx submission\03_Workbooks\ShashidharBS_Effort_Log.docx
+
+# 3. The report folder holds a single PDF, so drop the DOCX sources of the two PDFs
+Remove-Item submission\02_Report\*.docx, submission\03_Workbooks\ShashidharBS_Effort_Log.docx
+
+# 4. The video goes in as submission\01_Video\ShashidharBS_Capstone_Video.mp4, then:
+.\scripts\prepare_submission.ps1 -CreateZip
+```
+
+Step 4 copies the source into `04_Source_Code` with a verified Git bundle of
+the full history, and refuses to build the archive until the video is present.
+Build the documents after the effort log is final: step 1 reads
+`effort/effort_log.csv`.
 
 ## Attribution
 

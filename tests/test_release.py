@@ -56,3 +56,41 @@ class ReleaseTests(unittest.TestCase):
                     Passage('DOC-B', 'Billing', 'Invoice billing payment balance account statement details.', .8)]
         v = validate(Draft('Rotate production credentials securely using administrator settings. [DOC-B]', ['DOC-B']), passages)
         self.assertTrue(v.blocked)
+
+    def test_reason_never_states_certainty(self):
+        """A3: a calibrated 0.9999 must not be written as "100% confidence"."""
+        from src.models import Ticket
+        ticket = Ticket('T', 'chat', '', 'rotate key', '', 'C', 'standard', 'europe', 'fluent')
+        passages = [Passage('DOC-A', 'Keys', 'Rotate the key under settings.', .9)]
+        answered = route(ticket, Classification('api_usage_question', 'low', .9999), passages, threshold=.8)
+        self.assertEqual(answered.rule, 'confident_and_supported')
+        self.assertIn('99.99% confidence', answered.reason)
+        self.assertNotIn('100%', answered.reason)
+        low = route(ticket, Classification('api_usage_question', 'low', .996), passages, threshold=.999)
+        self.assertEqual(low.rule, 'low_confidence')
+        self.assertNotIn('100%', low.reason)
+
+    def test_unclassified_outcomes_record_no_intent(self):
+        """Paused and crashed tickets are never classified, so they must not be
+        logged as unclear_request: that placeholder inflates the class in any
+        audit and scores as a wrong prediction when labels are present."""
+        from dataclasses import replace
+        from src.config import Config
+        from src.control import AutomationControl
+        from src.models import Ticket
+        from src.monitoring import Metrics
+        from src.pipeline import Pipeline
+        ticket = Ticket('T', 'chat', '', 'rotate key', '', 'C', 'standard', 'europe', 'fluent')
+        with tempfile.TemporaryDirectory() as tmp:
+            control = AutomationControl(Path(tmp) / 'paused')
+            config = replace(Config(), retrieval_backend='lexical', kill_switch_path=str(control.path))
+            control.disable()
+            paused = Pipeline(config=config, control=control, metrics=Metrics(),
+                              classifier=Mock(), retriever=Mock()).process(ticket)
+            control.enable()
+            crashed = Pipeline(config=config, control=control, metrics=Metrics(), retriever=Mock(),
+                               classifier=Mock(classify=Mock(side_effect=RuntimeError('boom')))).process(ticket)
+        for o, rule in ((paused, 'automation_paused'), (crashed, 'pipeline_error')):
+            self.assertEqual(o.rule, rule)
+            self.assertIsNone(o.intent)
+            self.assertIsNone(o.confidence)

@@ -146,7 +146,7 @@ def evaluate(tickets, cached, semantic, threshold: float, backend: str, gate: fl
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", default=DEV)
-    ap.add_argument("--output", default="evaluation/threshold")
+    ap.add_argument("--output", default="evaluation/final/threshold")
     ap.add_argument("--backend", choices=("lexical", "chroma", "hybrid"),
                     default=CONFIG.retrieval_backend)
     ap.add_argument("--semantic-gate", type=float, default=CONFIG.semantic_gate)

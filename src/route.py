@@ -28,6 +28,19 @@ POLICY_ESCALATE = frozenset(
 NO_DOC_INTENTS = frozenset({"feature_request", "unclear_request"})
 
 
+def _share(x: float) -> str:
+    """A proportion as a percentage that never rounds up to certainty.
+
+    Calibrated confidence stays below 1.0 (A3), but `:.0%` prints 0.9999 as
+    "100%", which reads as certainty to the support manager the reason is
+    written for. Below 1, a value that would round to 100% is truncated to two
+    decimals instead ("99.99%"). Everything else keeps the whole-number form.
+    """
+    if x < 1 and round(x * 100) >= 100:
+        return f"{math.floor(x * 10000) / 100:.2f}%"
+    return f"{x:.0%}"
+
+
 def route(
     ticket: Ticket,
     classification: Classification,
@@ -60,7 +73,7 @@ def route(
             action="escalate",
             reason=(
                 f"The request was read as '{classification.intent}' but only with "
-                f"{classification.confidence:.0%} confidence, below the {threshold:.0%} bar "
+                f"{_share(classification.confidence)} confidence, below the {_share(threshold)} bar "
                 f"for answering without review."
             ),
             rule="low_confidence",
@@ -79,7 +92,7 @@ def route(
     return Routing(
         action="auto_respond",
         reason=(
-            f"Read as '{classification.intent}' with {classification.confidence:.0%} "
+            f"Read as '{classification.intent}' with {_share(classification.confidence)} "
             f"confidence and supported by {len(passages)} documentation passage(s): "
             f"{', '.join(p.doc_id for p in passages)}."
         ),

@@ -104,7 +104,11 @@ These are true, and an assessor will notice if they're left unsaid:
   duplicates of development tickets, and 69 are near-duplicates, which is why
   intent accuracy reads 100% there. The honest figure is the grouped
   cross-validation accuracy, **94.4%**.
-- **The suite is 84 test runs, 81 of them distinct tests.** Three pause-control
+- **Fairness fails on one dimension.** Regional routing agreement varies 13.12
+  points (Latin America 68.3%, Europe 81.5%) and regional citation coverage
+  8.45, against a 5-point limit. Every fluency and tier measure passes. This
+  belongs in the "Governance and risk" minutes, not left for questions.
+- **The suite is 86 test runs, 83 of them distinct tests.** Three pause-control
   tests run twice, because the API test class inherits them. The report labels
   them.
 
@@ -167,15 +171,14 @@ at `http://localhost:9090`, and use Dashboards → Import to upload
 
 ## Known issues visible on camera
 
-These are in the system rather than the tooling. They're not fixed here, because
-each one changes production behaviour or evaluated outputs:
+One is in the system rather than the tooling, and it's deliberately left alone,
+because changing it would change the evaluated outputs:
 
-- **The reason text says "100% confidence."** `src/route.py` formats a
-  calibrated 0.9999 with `:.0%`, which rounds it up and contradicts A3's "never
-  states certainty". The demo's own panels show two decimals (99.99%), but the
-  reason text still says 100%.
-- **Paused tickets are logged as `intent=unclear_request, confidence=0.0`.**
-  That's a placeholder, but it inflates unclear-request counts in any audit of
-  the decision log.
 - **Extractive replies include markdown headers** such as `# Title` and
-  `**Applies to:**`, pasted straight from the documentation.
+  `**Applies to:**`, pasted straight from the documentation. Step 1 shows the
+  live model's reply next to it for that reason.
+
+Fixed on 24 September (D14), so they no longer appear: reason texts saying
+"100% confidence", and paused tickets being logged as `unclear_request`. The
+saved results in `evaluation/final/` predate the wording fix, so their reason
+texts still say 100%. If you open those files on camera, say so.

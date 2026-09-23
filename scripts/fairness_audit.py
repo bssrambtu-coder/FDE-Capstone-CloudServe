@@ -202,7 +202,7 @@ def within_intent(rows: list[dict], field: str, *, min_n: int = 12) -> list[dict
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", default=DEV)
-    ap.add_argument("--output", default="evaluation/fairness")
+    ap.add_argument("--output", default="evaluation/final/fairness")
     ap.add_argument("--min-cell", type=int, default=12)
     ap.add_argument("--backend", choices=("lexical", "chroma", "hybrid"),
                     default=CONFIG.retrieval_backend)

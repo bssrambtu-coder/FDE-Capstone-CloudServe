@@ -76,7 +76,10 @@ class Pipeline:
                 rule="pipeline_error",
                 reason="The system could not process this ticket and passed it to a person.",
                 latency_ms=round((time.perf_counter() - started) * 1000, 2),
-                intent="unclear_request", urgency="medium", confidence=0.0,
+                # Not classified, so recorded as unknown rather than as a
+                # guess: a placeholder intent would be counted as a wrong
+                # prediction and inflate unclear_request in any log audit.
+                intent=None, urgency=None, confidence=None,
                 error=type(exc).__name__,
             )
         # Recorded on both paths, and outside the try, so a crashed ticket is
@@ -88,7 +91,8 @@ class Pipeline:
     def _paused(ticket):
         return Outcome(ticket_id=ticket.ticket_id, channel=ticket.channel,
                        action="escalated", rule="automation_paused",
-                       intent="unclear_request", urgency="medium", confidence=0.0,
+                       # Paused tickets are never classified; see the note above.
+                       intent=None, urgency=None, confidence=None,
                        reason="Automatic replies are paused by the operator.")
 
     def _process(self, ticket: Ticket, started: float) -> Outcome:

@@ -283,12 +283,55 @@ retrieval support and policy alone — which is close to what the system already
 does in practice.
 
 Not attempted before submission. The sweep is cheap and repeatable
-(`scripts/sweep_threshold.py`, results in `evaluation/threshold/`), but
+(`scripts/sweep_threshold.py`; first sweep in `evaluation/archive/threshold/`,
+final sweep in `evaluation/final/threshold/`), but
 recalibrating changes every headline number in the report and in the fairness
 audit, and there is not enough time left to re-audit honestly. Recorded as a
 known defect with a diagnosis rather than patched in a hurry.
 
+## D14 — Final corrections before the recorded demonstration
+
+Four changes on 24 September 2026. None of them changes a routing decision.
+Re-running the development and validation sets reproduces every saved action,
+rule, intent, confidence, source, citation and response in
+`evaluation/final/`; only the reason wording and the latency figures differ.
+
+1. **The reason text no longer states certainty.** `src/route.py` formatted a
+   calibrated 0.9999 with `:.0%`, so answered tickets read "with 100%
+   confidence", contradicting D4. It now reads "99.99%": a value below 1 that
+   would round to 100% is truncated to two decimals. The saved results in
+   `evaluation/final/` keep the old wording, because their decisions and
+   metrics are unchanged and repeating the approved live run for a wording fix
+   was not justified.
+2. **Unclassified tickets record no intent.** Paused and crashed tickets were
+   logged as `intent=unclear_request, urgency=medium, confidence=0.0`. That
+   placeholder inflates `unclear_request` in any audit of the log, and scores
+   as a wrong prediction whenever labels are present. Both now record the
+   three fields as unknown. No final run contains a paused or crashed ticket,
+   so no reported figure moves.
+3. **The fairness audit was re-run on the submitted system** (see
+   `docs/fairness_audit.md`, "Final re-audit"). The tier routing breach
+   closed (5.80pp to 3.53pp). The regional routing gap widened (7.99pp to
+   13.12pp), and regional citation coverage stays at 8.45pp. R-08 is updated
+   accordingly, and its threshold lever is withdrawn per D13.
+4. **Results housekeeping.** The 4–7 September results moved to
+   `evaluation/archive/`, so `evaluation/final/` is the only current set. The
+   audit and sweep scripts now write there by default. `requirements.txt` pins
+   the two document libraries the submission scripts need. The effort record
+   is now generated into `03_Workbooks`, where the Submission Guide files it.
+
+The same day added a demonstration environment for the video: `scripts/demo.py`,
+a `/demo` page on the API, a grouped test report and a provisioned
+Prometheus/Grafana stack (see `docs/DEMO.md`). CI rehearses the demonstration
+on every push.
+
 ## Open items
+
+**24 September 2026 status.** R-08 now stands at 13.12pp regional routing
+agreement and 8.45pp regional citation coverage; the tier gap is closed. Over-
+answering on development is 18.4% (92 tickets) against 6.0% under-answering
+(30). The bullets below are the history that led here; where they give older
+figures, D14 and the final re-audit supersede them.
 
 **19 September 2026 status.** D13 was followed by grouped temperature scaling.
 Temperature 2 improved nested held-out log loss (0.2193 to 0.2040) and Brier
@@ -300,8 +343,9 @@ the two historical bullets below saying they do not exist are superseded.
 - **R-07 primary breach CLOSED by D10.** Hybrid retrieval brought every
   fluency measure inside the 5pp condition (retrieval gap 8.29pp to 4.30pp)
   and lifted hit rate 79.8% to 96.4%. Re-audited, not argued.
-- **R-08 open.** Routing agreement now varies by region (7.99pp) and tier
-  (5.80pp), and citation coverage by region (8.45pp). Different cause: better
+- **R-08 open** (figures as of 4 September; final figures in D14). Routing
+  agreement varied by region (7.99pp) and tier (5.80pp), and citation coverage
+  by region (8.45pp). Different cause: better
   retrieval removed an escalation path, so automation rose 69% to 81% and
   over-answering rose with it. The lever is *not* the confidence threshold
   (D13): swept across its whole usable range it changes no routing decision at

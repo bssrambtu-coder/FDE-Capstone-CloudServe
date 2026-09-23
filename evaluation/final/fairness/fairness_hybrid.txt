@@ -1,0 +1,56 @@
+input: Capstone_Pack/05_Datasets/development_tickets.json   backend=hybrid   n=500   overall automation 74.6%
+
+QUALITY MEASURES (the condition is on quality, not throughput)
+
+=== customer_tier
+  intent_accuracy      spread   0.00pp [ok  ]  business=100.0%  enterprise=100.0%  standard=100.0%
+  routing_agreement    spread   3.53pp [ok  ]  business=77.44%  enterprise=77.11%  standard=73.91%
+  retrieval_hit_rate   spread   4.00pp [ok  ]  business=94.31%  enterprise=98.31%  standard=97.14%
+  citation_present     spread   1.85pp [ok  ]  business=90.24%  enterprise=91.57%  standard=92.09%
+
+=== customer_region
+  intent_accuracy      spread   0.00pp [ok  ]  asia_pacific=100.0%  europe=100.0%  latin_america=100.0%  north_america=100.0%
+  routing_agreement    spread  13.12pp [FAIL]  asia_pacific=73.11%  europe=81.46%  latin_america=68.33%  north_america=74.71%
+  retrieval_hit_rate   spread   4.88pp [ok  ]  asia_pacific=96.05%  europe=96.52%  latin_america=100.0%  north_america=95.12%
+  citation_present     spread   8.45pp [FAIL]  asia_pacific=86.55%  europe=92.05%  latin_america=95.0%  north_america=92.94%
+
+=== language_fluency
+  intent_accuracy      spread   0.00pp [ok  ]  fluent=100.0%  non_fluent=100.0%
+  routing_agreement    spread   1.89pp [ok  ]  fluent=76.05%  non_fluent=74.17%
+  retrieval_hit_rate   spread   4.30pp [ok  ]  fluent=97.41%  non_fluent=93.1%
+  citation_present     spread   4.04pp [ok  ]  fluent=92.37%  non_fluent=88.33%
+
+==============================================================================
+AUTOMATION RATE DECOMPOSITION
+
+=== customer_tier
+group                n  observed  expected  residual            95% CI  label
+  business         164     71.3%     72.1%     -0.7           [64,78]  64.63
+  enterprise        83     77.1%     76.5%     +0.7           [67,85]  61.45
+  standard         253     75.9%     75.6%     +0.3           [70,81]  60.87
+  spread: observed 5.77pp | residual 1.39pp | label-implied 3.76pp
+  largest gap: business vs enterprise = 5.77pp (p=0.3333)
+  residual verdict against 5.0pp condition: PASS
+  within-intent gaps: none (no cell reached n=12)
+
+=== customer_region
+group                n  observed  expected  residual            95% CI  label
+  asia_pacific     119     70.6%     72.5%     -1.9           [62,78]  53.78
+  europe           151     78.8%     78.2%     +0.6           [72,85]  68.21
+  latin_america     60     76.7%     74.3%     +2.4           [65,86]  65.0
+  north_america    170     72.9%     73.0%     -0.1           [66,79]  61.76
+  spread: observed 8.22pp | residual 4.3pp | label-implied 14.43pp
+  largest gap: asia_pacific vs europe = 8.22pp (p=0.1206)
+  residual verdict against 5.0pp condition: PASS
+  within-intent gaps: none (no cell reached n=12)
+
+=== language_fluency
+group                n  observed  expected  residual            95% CI  label
+  fluent           380     76.3%     75.6%     +0.7           [72,80]  60.79
+  non_fluent       120     69.2%     71.5%     -2.3           [60,77]  66.67
+  spread: observed 7.15pp | residual 3.07pp | label-implied 5.88pp
+  largest gap: fluent vs non_fluent = 7.15pp (p=0.1168)
+  residual verdict against 5.0pp condition: PASS
+  within-intent gaps: none (no cell reached n=12)
+
+wrote evaluation/final/fairness/fairness_hybrid.json
