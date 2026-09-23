@@ -1,0 +1,9 @@
+# Loads every dashboard JSON in /var/lib/grafana/dashboards at start-up.
+apiVersion: 1
+providers:
+  - name: CloudServe
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards

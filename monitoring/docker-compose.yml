@@ -1,0 +1,51 @@
+# Prometheus and Grafana for the live demo, pre-wired to the local API.
+#
+#   python -m src.api --backend hybrid                        # terminal 1: the API on :8000
+#   docker compose -f monitoring/docker-compose.yml up -d     # terminal 2: this stack
+#   python scripts/demo_traffic.py --rate 1                   # terminal 3: traffic
+#
+#   Grafana     http://localhost:3000   opens straight onto the dashboard, no login
+#   Prometheus  http://localhost:9090   targets, alerts and raw queries
+#
+#   docker compose -f monitoring/docker-compose.yml down      # stop it afterwards
+#
+# Both ports are bound to 127.0.0.1, so neither is reachable from the network.
+# Grafana admits anonymous viewers so nothing has to be typed on camera; the
+# admin account keeps its default password, which is acceptable only because
+# of that loopback binding.
+
+name: cloudserve-monitoring
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=1d
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports:
+      - "127.0.0.1:9090:9090"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # Docker Desktop provides this already; Linux needs it
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:11.1.0
+    depends_on:
+      - prometheus
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/cloudserve_triage.json
+      GF_USERS_DEFAULT_THEME: light
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_NEWS_NEWS_FEED_ENABLED: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped

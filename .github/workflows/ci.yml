@@ -106,6 +106,25 @@ jobs:
       - name: Acceptance tests, extras present
         run: python -m unittest discover -s tests
 
+      # The recorded demo checks every step against its rehearsed outcome and
+      # exits non-zero on any difference, so a change that would make the video
+      # show something else fails here first.
+      - name: Rehearse the recorded demo end to end
+        run: python scripts/demo.py --no-pause
+
+      - name: Grouped test report
+        if: always()
+        run: python scripts/test_report.py --output artifacts/test_report.html
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: demo-and-test-report
+          path: |
+            artifacts/test_report.html
+            artifacts/demo-run/
+          retention-days: 14
+
       - name: Hybrid retrieval must actually have its semantic half
         run: |
           python - <<'PY'

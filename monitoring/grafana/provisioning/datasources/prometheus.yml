@@ -1,0 +1,12 @@
+# Loaded by Grafana at start-up (docker-compose mounts this directory).
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: cloudserve-prometheus      # the dashboard's panels reference this uid
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090     # the prometheus service in docker-compose.yml
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 5s              # matches the demo scrape interval

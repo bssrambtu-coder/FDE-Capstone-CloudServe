@@ -27,7 +27,7 @@ class TicketRequest(BaseModel):
     language_fluency: str = Field(default="", max_length=64)
 
 
-def create_app(*, config=CONFIG, pipeline=None, use_provider=False):
+def create_app(*, config=CONFIG, pipeline=None, use_provider=False, demo_page=True):
     serial = Lock()  # The model cache and pipeline are single-writer resources.
 
     @asynccontextmanager
@@ -41,6 +41,9 @@ def create_app(*, config=CONFIG, pipeline=None, use_provider=False):
         yield
 
     app = FastAPI(title="Support triage (local demo)", lifespan=lifespan)
+    if demo_page:
+        from .demo_page import register
+        register(app, config=config, corpus_path=config.corpus_path)
 
     @app.get("/health")
     def health():
@@ -93,19 +96,32 @@ def create_app(*, config=CONFIG, pipeline=None, use_provider=False):
                     "customer_response": outcome.response if outcome.action == "answered" else None,
                     "agent_draft": outcome.response if outcome.action == "escalated" else None,
                     "citations": outcome.citations, "degraded": outcome.degraded,
-                    "guardrail_findings": outcome.guardrail_findings}
+                    "guardrail_findings": outcome.guardrail_findings,
+                    # Additive fields, already in the decision log; the demo page shows them.
+                    "intent": outcome.intent, "urgency": outcome.urgency,
+                    "confidence": outcome.confidence, "sources": outcome.sources,
+                    "latency_ms": outcome.latency_ms}
 
     return app
 
 
 def main():
     import argparse
+    import threading
+    import webbrowser
     import uvicorn
+    from . import console
+    console.setup()  # no per-request embedding progress bars in the server console
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--backend", choices=["lexical", "hybrid"], default=CONFIG.retrieval_backend)
     parser.add_argument("--use-provider", action="store_true")
+    parser.add_argument("--open", action="store_true", help="open the demo page in a browser once ready")
     args = parser.parse_args()
+    url = f"http://127.0.0.1:{args.port}/demo"
+    print(f"Demo page: {url}   API docs: http://127.0.0.1:{args.port}/docs", flush=True)
+    if args.open:
+        threading.Timer(2.5, lambda: webbrowser.open(url)).start()
     uvicorn.run(create_app(config=replace(CONFIG, retrieval_backend=args.backend),
                            use_provider=args.use_provider), host="127.0.0.1", port=args.port)
 

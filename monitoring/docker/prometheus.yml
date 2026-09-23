@@ -1,0 +1,19 @@
+# Prometheus configuration for the docker-compose demo stack.
+#
+# Differs from ../prometheus.yml in two ways only: it reaches the API through
+# host.docker.internal, because inside a container "localhost" is the
+# container itself, and it scrapes every 5s instead of 15s so a few minutes of
+# demo traffic is enough to fill the panels.
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: "support-system"
+    metrics_path: /metrics/prometheus
+    static_configs:
+      - targets: ["host.docker.internal:8000"]

@@ -40,7 +40,8 @@ From the project folder, on Windows:
 .\.venv\Scripts\python.exe -m src.api --backend lexical
 ```
 
-Open http://127.0.0.1:8000/docs to try the API. Add `--use-provider` only when
+Open http://127.0.0.1:8000/docs to try the API, or http://127.0.0.1:8000/demo
+for a browser page over the same endpoint (`--open` launches it). Add `--use-provider` only when
 ticket text and retrieved documentation are approved for transmission to
 OpenRouter. Without it, processing stays local. `/health` reports the generation
 mode, semantic retrieval availability and pause status. `/metrics` returns a
@@ -71,6 +72,18 @@ is checked again after generation; it cannot recall a reply already released.
 There is deliberately no remote administration endpoint. Keep the server bound
 to localhost: authentication, deployment hardening, retention controls and
 outbound delivery are not implemented. Local decision logs contain ticket text.
+
+### Recording the demonstration
+
+```bash
+python scripts/demo.py              # every required demo moment, in order
+python scripts/test_report.py       # the suite grouped by acceptance criterion
+```
+
+`docs/DEMO.md` has the setup, a pre-recording check, a run of show matched to
+the Submission Guide, and the live Prometheus and Grafana stack
+(`monitoring/docker-compose.yml`). The demo runner checks every step against
+its rehearsed outcome and exits non-zero if one differs; CI runs it on every push.
 
 Final verification on 19 September 2026: all 73 tests passed with semantic
 retrieval available. The hybrid/extractive 80-ticket validation produced 56
